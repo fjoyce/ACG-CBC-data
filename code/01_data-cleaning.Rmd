@@ -1,0 +1,28 @@
+---
+title: "CBC 2021 data cleaning"
+author: "An Bui"
+date: "1/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 0. set up
+
+## Libraries
+```{r}
+library(tidyverse) # general manipulation
+library(here) # organizing directories
+```
+
+## Data
+```{r}
+# Murcielago
+murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv"))
+
+# Leiva
+leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv"))
+```
+
