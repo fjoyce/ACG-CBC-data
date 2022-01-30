@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # 0. set up
 
 ## Libraries
-```{r}
+```{r message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
