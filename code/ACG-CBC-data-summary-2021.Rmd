@@ -1,7 +1,7 @@
 ---
-title: "CBC 2021 data cleaning"
+title: "CBC 2021 data visualization"
 author: "An Bui"
-date: "1/28/2022"
+date: "January 2022"
 output:
   html_document:
     toc: true
@@ -15,20 +15,35 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 0. set up
+# 0. Introduction
 
-## a. libraries
-```{r message = FALSE}
+## a. Where'd the data come from?
+
+The data presented below are observations from the Cacao count on the 28th of December 2021 (FHJ, MH, AB) and the Leiva count on the 30th of December 2021 (FHJ, RVJ, MH, AB). 
+
+## b. Organization
+
+This document is set up to show all the code involved in the visualizations for transparency, and I've tried to annotate the code as much as possible so that folks can have a sense of what they're looking at. However, you can use the table of contents to the left to skip through the code walk-throughs to get to the plots. Additionally, a cleaned up, no-code version is available in PDF form [here]() if you would prefer that.
+
+# 1. Set up
+
+## a. Libraries 
+
+One of the big selling points for using R is the fact that you can take advantage of packages. Packages are collections of code that people have written to do very specific things, and the ones below are what I am using.
+
+```{r message = FALSE, warning = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
 library(BiodiversityR) # to make rank abundance curve
 library(ggrepel) # repel ggplot text labels
+library(tanagR) # color palettes inspired by members of the Thraupidae family
+library(rlang) # for writing functions
 ```
 
-## b. data
+## b. Data
 
-There are four data frames here:  
+The data format here is called a "data frame". This is basically the R version of an Excel file in .csv or .xlsx. There are four data frames here:  
 1. `taxon_nacc`: taxonomic information from the [NACC](http://checklist.americanornithology.org/)  
 2. `murci`: Murciélago counts  
 3. `leiva`: Leiva counts  
@@ -56,55 +71,74 @@ leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.cs
 birds <- rbind(murci, leiva) 
 ```
 
-# 1. Observations by family
+# 2. Observations by family
 
-## a. Leiva
+I was curious about the number of observations by family (I would not, for example, expect many observations of Trochilidae regardless of how many there may have been flitting around...). To do this, I calculated the total number of observed individuals for each family for each count, and made a bar graph displaying all families detected.
 
-```{r fig.width = 12}
-leiva_families <- leiva %>% 
-  # summarizing observations by family
-  group_by(family) %>% 
-  summarize(sum_obs = sum(numero)) %>% 
-  ungroup() %>% 
-  # set the factor levels to be in descending order by sum_obs
-  arrange(-sum_obs) %>% 
-  mutate(family = fct_inorder(family))
+## a. Code
 
-ggplot(leiva_families,
-       aes(x = family, y = sum_obs)) +
-  geom_col(aes(fill = family)) +
-  geom_text(aes(label = sum_obs), nudge_y = 2) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 53)) +
-  theme_classic() +
-  theme(legend.position = "none",
-        axis.text.x = element_text(angle = -45, hjust = 0)) +
+There are two code chunks here. The first calculates the total number of observed individuals of each family in each count. Since I'm doing this twice (once for `murci`, and once for `leiva`), I created a function called `family_summary` so that I wouldn't have to rewrite (or, realistically, copy/paste) the same code twice. The objects that come out of this are `murci_familiies` and `leiva_families`.
+
+```{r}
+family_summary <- function(df) {
+  df %>% 
+    group_by(family) %>% 
+    # summarizing observations by family
+    group_by(family) %>% 
+    summarize(sum_obs = sum(numero)) %>% 
+    ungroup() %>% 
+    # set the factor levels to be in descending order by sum_obs
+    arrange(-sum_obs) %>% 
+    mutate(family = fct_inorder(family))
+}
+
+murci_families <- family_summary(murci)
+
+leiva_families <- family_summary(leiva)
+```
+
+The second code chunk creates the bar plots: columns for each family with a label indicating how many individuals were observed. Similarly to what I did above, I created a function to put all the same code in one place. The objects here are called `murci_families_bar` and `leiva_families_bar`.
+
+```{r}
+barplot_format <- function(df) {
+  ggplot(df, aes(x = family, y = sum_obs)) +
+    geom_col(aes(fill = family)) +
+    geom_text(aes(label = sum_obs), nudge_y = max(df$sum_obs*0.02)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05))) +
+    theme_classic() +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = -45, hjust = 0, size = 14),
+          axis.title = element_text(size = 20),
+          title = element_text(size = 25)) 
+}
+
+murci_families_barplot <- barplot_format(murci_families) +
+  # use the Tangara chilensis color palette
+  scale_fill_manual(values = tanagr_palette("tangara_chilensis", n = 38, discrete = FALSE)) +
+  labs(x = "Family", y = "Total observations",
+       title = "Murciélago observations by family")
+
+leiva_families_barplot <- barplot_format(leiva_families) +
+  # use the Dacnis berlepschi color palette
+  scale_fill_manual(values = tanagr_palette("dacnis_berlepschi", n = 34, discrete = FALSE)) +
   labs(x = "Family", y = "Total observations",
        title = "Leiva observations by family")
 ```
 
-## b. Murciélago
+## b. Plots
 
-```{r fig.width = 12}
-murci_families <- murci %>% 
-  # summarizing observations by family
-  group_by(family) %>% 
-  summarize(sum_obs = sum(numero)) %>% 
-  ungroup() %>% 
-  # set the factor levels to be in descending order by sum_obs
-  arrange(-sum_obs) %>% 
-  mutate(family = fct_inorder(family))
-
-ggplot(murci_families,
-       aes(x = family, y = sum_obs)) +
-  geom_col(aes(fill = family)) +
-  geom_text(aes(label = sum_obs), nudge_y = 5) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 235)) +
-  theme_classic() +
-  theme(legend.position = "none",
-        axis.text.x = element_text(angle = -45, hjust = 0)) +
-  labs(x = "Family", y = "Total observations",
-       title = "Murciélago observations by family")
+```{r fig.width = 14, fig.height = 8}
+murci_families_barplot
 ```
+
+We saw _a lot_ of Brown Pelicans on our Cacao count. Also, lots of parrots! Seems they are not locally extinct after all.
+
+```{r fig.width = 14, fig.height = 8}
+leiva_families_barplot
+```
+
+It seems that we saw lots of tanagers (Thraupidae) at Leiva (not surprising!), followed by flycatchers (Tyrannidae), and cuckoos (Cuculidae, mostly Squirrel Cuckoos). 
+
 
 # 2. Rank abundance
 
@@ -112,10 +146,10 @@ ggplot(murci_families,
 
 Rank abundance curves are plotted with the proportion (or raw number of) observations for each species on the y-axis, and rank on the x-axis. From these plots, you can glean information about how abundant species were in your data.
 
-## b. Getting the data in order
+## b. Code
 
 First, I'll make a data frame to calculate rank abundance where each column is a species (n = 150) and each row is a "site" (n = 2, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
-```{r}
+```{r message = FALSE}
 # use the `birds` data frame
 birds_ra_df <- birds %>% 
   # select site, species, and number
@@ -145,33 +179,56 @@ env <- tribble(
   mutate(sitio = as_factor(sitio))
 ```
 
-## c. Making the plot
+To make the plot, I'll use the `BiodiversityR::rankabundance()` function to calculate rank abundance for Leiva and Murciélago.
 
-I'll use the `BiodiversityR::rankabuncomp()` function to calculate rank abundance for Leiva and Murciélago.
+```{r warning = FALSE}
+ra_code <- function(sitio) {
+  rankabundance(x = birds_ra_df, 
+                y = env, factor = "sitio",
+                level = c(sitio)) %>% 
+    as.data.frame() %>% 
+    rownames_to_column("especie") %>% 
+    select(-plower, -pupper)
+}
 
-```{r echo = FALSE, message = FALSE}
-birds_ra_data <- rankabuncomp(x = birds_ra_df, 
-                              y = env, factor = "sitio", 
-                              scale = "proportion", 
-                              legend = FALSE, specnames = c(1:30),
-                              return.data = TRUE)
+murci_ra_data <- ra_code("murci")
+
+leiva_ra_data <- ra_code("leiva")
 ```
 
-These are the first 10 rows of the output:
+Plot code below, with a function to keep things tidy.
 
 ```{r}
-head(birds_ra_data, 10)
+ra_formatting <- function(df) {
+  ggplot(df, aes(x = rank, y = proportion)) +
+    geom_line(size = 1) +
+    geom_point(size = 2) +
+    geom_text_repel(data = df %>% filter(rank < 10),
+                    aes(label = especie),     
+                    segment.curvature = -1e-20, point.padding = 0.2, 
+                    force_pull = 10, direction = "y", 
+                    nudge_x = 15, nudge_y = 0.1,
+                    size = 5) +
+    theme_bw() +
+    theme(axis.title = element_text(size = 20),
+          title = element_text(size = 25))
+}
+
+murci_ra_plot <- ra_formatting(murci_ra_data) +
+  labs(x = "Rank", y = "Proportion of total individuals observed",
+       title = "Murciélago count rank abundance")
+
+leiva_ra_plot <- ra_formatting(leiva_ra_data) +
+  labs(x = "Rank", y = "Proportion of total individuals observed",
+       title = "Leiva count rank abundance")
 ```
 
-I'll plot the curves using the output `birds_ra_data`.
+## b. Plots
 
-```{r fig.width = 20}
-ggplot(birds_ra_data, aes(x = rank, y = proportion)) +
-  geom_line(aes(color = Grouping), size = 1) +
-  geom_point(aes(color = Grouping), size = 2) +
-  geom_text_repel(data = birds_ra_data %>% filter(rank < 10),
-                  aes(label = species)) +
-  facet_wrap(~ Grouping, scales = "free")
+```{r}
+murci_ra_plot
+
+leiva_ra_plot
 ```
 
 
