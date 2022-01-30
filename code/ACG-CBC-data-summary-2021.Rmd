@@ -137,7 +137,7 @@ We saw _a lot_ of Brown Pelicans on our Cacao count. Also, lots of parrots! Seem
 leiva_families_barplot
 ```
 
-It seems that we saw lots of tanagers (Thraupidae) at Leiva (not surprising!), followed by flycatchers (Tyrannidae), and cuckoos (Cuculidae, mostly Squirrel Cuckoos). 
+It seems that we saw lots of tanagers (Thraupidae) at Leiva (not surprising!), followed by flycatchers (Tyrannidae), and cuckoos (Cuculidae, mostly Squirrel Cuckoos).    
 
 
 # 2. Rank abundance
@@ -231,7 +231,7 @@ murci_ra_plot
 leiva_ra_plot
 ```
 
-
+A little test...
 
 
 
