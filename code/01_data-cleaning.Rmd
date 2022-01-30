@@ -17,6 +17,7 @@ library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
 library(BiodiversityR) # to make rank abundance curve
+library(ggrepel) # repel ggplot text labels
 ```
 
 ## Data
@@ -92,35 +93,68 @@ ggplot(murci_families,
 
 # 2. Rank abundance
 
+## a. What is a rank abundance curve?
+
+Rank abundance curves are plotted with the proportion (or raw number of) observations for each species on the y-axis, and rank on the x-axis. From these plots, you can glean information about how abundant species were in your data.
+
+## b. Getting the data in order
+
+First, I'll make a data frame to calculate rank abundance where each column is a species (n = `r ncol(birds_ra_df)`) and each row is a "site" (n = `r nrow(birds_ra_df)`, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
 ```{r}
+# use the `birds` data frame
 birds_ra_df <- birds %>% 
+  # select site, species, and number
   select(sitio, especie, numero) %>% 
+  # calculate total number of observations per species per site
   group_by(sitio, especie) %>% 
   summarize(sum_obs = sum(numero)) %>% 
+  # spread out the data frame so that each column is a species
   pivot_wider(names_from = especie, values_from = sum_obs) %>% 
   column_to_rownames("sitio") %>% 
+  # replace any NA with 0
   replace(is.na(.), 0)
+```
 
+I'll also make a data frame with the site information: not especially informative, but useful for plotting the data later.
+
+```{r}
+# use the `dplyr::tribble()` function
 env <- tribble(
+  # create one column called "sitio" with "leiva" and "murci"
   ~sitio,
   "leiva",
-  "murci"
-) %>% 
+  "murci") %>% 
+  # make sure this is a data.frame
   as.data.frame() %>% 
+  # set the factors
   mutate(sitio = as_factor(sitio))
+```
 
+## c. Making the plot
+
+I'll use the `BiodiversityR::rankabuncomp()` function to calculate rank abundance for Leiva and Murciélago.
+
+```{r}
 birds_ra_data <- rankabuncomp(x = birds_ra_df, 
                               y = env, factor = "sitio", 
                               scale = "proportion", 
                               legend = FALSE, specnames = c(1:30),
                               return.data = TRUE)
 
-ggplot(birds_ra_data, aes(x = rank, y = abundance))
+head(birds_ra_data)
 ```
 
+I'll plot the curves using the output `birds_ra_data`.
 
-
-
+```{r}
+ggplot(birds_ra_data, aes(x = rank, y = proportion)) +
+  geom_line(aes(color = Grouping), size = 1) +
+  geom_point(aes(color = Grouping), size = 2) +
+  geom_text_repel(data = birds_ra_data %>% filter(rank < 10),
+                  aes(label = species), 
+                  segment.curvature = -1e-20) +
+  facet_wrap(~ Grouping, scales = "free")
+```
 
 
 
