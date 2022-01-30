@@ -2,7 +2,13 @@
 title: "CBC 2021 data cleaning"
 author: "An Bui"
 date: "1/28/2022"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    theme: readable
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # 0. set up
 
 ## Libraries
-```{r}
+```{r message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
@@ -99,7 +105,7 @@ Rank abundance curves are plotted with the proportion (or raw number of) observa
 
 ## b. Getting the data in order
 
-First, I'll make a data frame to calculate rank abundance where each column is a species (n = `r ncol(birds_ra_df)`) and each row is a "site" (n = `r nrow(birds_ra_df)`, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
+First, I'll make a data frame to calculate rank abundance where each column is a species (n = 150) and each row is a "site" (n = 2, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
 ```{r}
 # use the `birds` data frame
 birds_ra_df <- birds %>% 
