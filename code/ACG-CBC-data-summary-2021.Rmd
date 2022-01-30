@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 0. set up
 
-## Libraries
+## a. libraries
 ```{r message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
@@ -26,8 +26,15 @@ library(BiodiversityR) # to make rank abundance curve
 library(ggrepel) # repel ggplot text labels
 ```
 
-## Data
-```{r}
+## b. data
+
+There are four data frames here:  
+1. `taxon_nacc`: taxonomic information from the [NACC](http://checklist.americanornithology.org/)  
+2. `murci`: Murciélago counts  
+3. `leiva`: Leiva counts  
+4. `birds`: data frame with both `murci` and `leiva`  
+
+```{r message = FALSE}
 # taxon info from NACC
 taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
 
@@ -35,12 +42,14 @@ taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
 murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv")) %>% 
   mutate(sitio = "murci") %>% 
   clean_names() %>% 
+  # attach taxonomic info
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # Leiva
 leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv")) %>% 
   mutate(sitio = "leiva") %>% 
   clean_names() %>% 
+  # attach taxonomic info
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # Murcielago and Leiva together in one data frame 
@@ -51,7 +60,7 @@ birds <- rbind(murci, leiva)
 
 ## a. Leiva
 
-```{r}
+```{r fig.width = 12}
 leiva_families <- leiva %>% 
   # summarizing observations by family
   group_by(family) %>% 
@@ -75,7 +84,7 @@ ggplot(leiva_families,
 
 ## b. Murciélago
 
-```{r}
+```{r fig.width = 12}
 murci_families <- murci %>% 
   # summarizing observations by family
   group_by(family) %>% 
@@ -140,25 +149,28 @@ env <- tribble(
 
 I'll use the `BiodiversityR::rankabuncomp()` function to calculate rank abundance for Leiva and Murciélago.
 
-```{r}
+```{r echo = FALSE, message = FALSE}
 birds_ra_data <- rankabuncomp(x = birds_ra_df, 
                               y = env, factor = "sitio", 
                               scale = "proportion", 
                               legend = FALSE, specnames = c(1:30),
                               return.data = TRUE)
+```
 
-head(birds_ra_data)
+These are the first 10 rows of the output:
+
+```{r}
+head(birds_ra_data, 10)
 ```
 
 I'll plot the curves using the output `birds_ra_data`.
 
-```{r}
+```{r fig.width = 20}
 ggplot(birds_ra_data, aes(x = rank, y = proportion)) +
   geom_line(aes(color = Grouping), size = 1) +
   geom_point(aes(color = Grouping), size = 2) +
   geom_text_repel(data = birds_ra_data %>% filter(rank < 10),
-                  aes(label = species), 
-                  segment.curvature = -1e-20) +
+                  aes(label = species)) +
   facet_wrap(~ Grouping, scales = "free")
 ```
 
