@@ -4,14 +4,14 @@ paved road,5:23,Common Pauraque,V,1,paved road
 Lower Río Murciélago,5:26,Laughing Falcon,A,2,
 Lower Río Murciélago,5:26,Ferruginous Pygmy-Owl,A,1,
 Lower Río Murciélago,5:34,Yellow-naped Parrot,A,1,
-Lower Río Murciélago,5:37,Common Black-Hawk,A,1,
+Lower Río Murciélago,5:37,Common Black Hawk,A,1,
 Lower Río Murciélago,5:38,Common Pauraque,A,1,
 Lower Río Murciélago,5:43,Bright-rumped Attila,A,1,
 Lower Río Murciélago,5:45,Yellow-naped Parrot,V,2,flying
 Lower Río Murciélago,5:46,Common Pauraque,V,1,flying
 Lower Río Murciélago,5:46,Yellow-naped Parrot,A,1,
 Lower Río Murciélago,5:47,Yellow-naped Parrot,V,2,flying
-Lower Río Murciélago,5:49,Hoffman's Woodpecker,A,1,
+Lower Río Murciélago,5:49,Hoffmann's Woodpecker,A,1,
 Lower Río Murciélago,5:50,Yellow-naped Parrot,V,2,flying
 Lower Río Murciélago,5:53,Yellow-naped Parrot,A,2,
 Lower Río Murciélago,5:53,Orange-chinned Parakeet,V,14,
@@ -49,7 +49,7 @@ Lower Río Murciélago,6:15,White-fronted Parrot,V,2,flying
 Lower Río Murciélago,6:17,White-tipped Dove,V,1,on ground
 Lower Río Murciélago,6:18,Orange-chinned Parakeet,V,8,flying
 Lower Río Murciélago,6:18,Brown Pelican,V,126,flying
-Lower Río Murciélago,6:19,Common Black-Hawk,V,1,flying
+Lower Río Murciélago,6:19,Common Black Hawk,V,1,flying
 Lower Río Murciélago,6:21,Rufous-naped Wren,A,2,
 Lower Río Murciélago,6:21,White-tipped Dove,V,2,"on ground, then flushed"
 Lower Río Murciélago,6:24,White Ibis,V,3,flying
@@ -86,13 +86,13 @@ Airstrip,7:04,Western Tanager,V,1,in tree
 Airstrip,7:07,Banded Wren,A,1,
 Airstrip,NA,Yellow Warbler,V,1,flying
 Airstrip,7:08,Great Kiskadee,A,1,
-Airstrip,7:09,Hoffman's Woodpecker,A,1,
+Airstrip,7:09,Hoffmann's Woodpecker,A,1,
 Airstrip,7:10,Scrub Euphonia,V,4,male and female in Cenízaro
 Airstrip,7:11,Orange-fronted Parakeet,V,2,flying
 Airstrip,7:13,Dusky-capped Flycatcher,V,2,in Cenízaro
 Airstrip,7:22,Roadside Hawk,V,1,"perched on bare branch, adult, photo"
 Airstrip,7:11,Yellow-olive Flycatcher,V,1,photo
-Airstrip,7:24,Hoffman's Woodpecker,A,1,
+Airstrip,7:24,Hoffmann's Woodpecker,A,1,
 Airstrip,7:25,Rufous-naped Wren,V,1,in vines
 Airstrip,7:26,Banded Wren,V,1,in Cenízaro
 Airstrip,7:30,Orange-fronted Parakeet,A,1,
@@ -110,7 +110,7 @@ Airstrip,7:48,White-fronted Parrot,A,2,flying
 Airstrip,7:50,Orange-fronted Parakeet,V,2,flying
 Airstrip,7:51,Scrub Euphonia,V,2,
 Airstrip,7:52,Rufous-naped Wren,V,4,in Guácimo tree
-Airstrip,7:53,Yellow Warber,V,1,in Guácimo tree
+Airstrip,7:53,Yellow Warbler,V,1,in Guácimo tree
 Airstrip,7:55,Brown-crested Flycatcher,V,1,in Guácimo tree
 Airstrip,8:00,Yellow-throated Vireo,V,1,in Cenízaro
 Airstrip,8:03,White-browed Gnatcatcher,V,1,in tree
@@ -123,11 +123,11 @@ Murciélago turnoff,8:15,Ruby-throated Hummingbird,V,1,"in papaya tree, female"
 Murciélago turnoff,8:17,Black Vulture,V,1,soaring
 Murciélago turnoff,8:18,Crested Caracara,V,1,flying
 Murciélago turnoff,8:18,Orange-fronted Parakeet,V,2,in Cenízaro
-Murciélago turnoff,8:19,Great-crested Flycatcher,A,1,
+Murciélago turnoff,8:19,Great Crested Flycatcher,A,1,
 Murciélago turnoff,8:19,Squirrel Cuckoo,V,1,in Cecropia tree
 Murciélago turnoff,8:20,Orange-chinned Parakeet,V,2,flying
 Murciélago turnoff,8:23,Yellow-naped Parrot,A,2,
-Murciélago turnoff,8:23,Great-crested Flycatcher,A,2,calling to each other
+Murciélago turnoff,8:23,Great Crested Flycatcher,A,2,calling to each other
 Murciélago turnoff,8:24,Pale-billed Woodpecker,A,1,
 Murciélago turnoff,8:26,Rufous-naped Wren,A,2,
 Murciélago turnoff,8:30,Orange-chinned Parakeet,A,2,
@@ -165,7 +165,7 @@ past second Murciélago crossing,9:15,Summer Tanager,V,1,"perched in tree, flew 
 past second Murciélago crossing,9:18,Short-tailed Hawk,V,1,"soaring (like Vulture), photo, FHJ initially mis-identified as king vulture"
 past second Murciélago crossing,9:20,Rufous-naped Wren,A,2,
 past second Murciélago crossing,9:21,Orange-chinned Parakeet,A,2,
-Puesto Murciélago,9:45,Hoffman's Woodpecker,A,1,
+Puesto Murciélago,9:45,Hoffmann's Woodpecker,A,1,
 Puesto Murciélago,9:45,Scrub Euphonia,A,2,
 Puesto Murciélago,10:03,Yellow Warbler,V,2,perched in tree
 Puesto Murciélago,10:04,Blue-vented Hummingbird,V,2,perched in tree
@@ -183,8 +183,8 @@ Puesto Murciélago,10:29,Rufous-naped Wren,A,1,
 Puesto Murciélago,10:30,White-tipped Dove,A,1,
 Puesto Murciélago,10:38,Yellow-naped Parrot,V,1,perched in tree
 Puesto Murciélago,10:42,Yellow Warbler,V,2,moving around tree
-Puesto Murciélago,10:51,Great-crested Flycatcher,V,1,in Bursera tree
-upper Murciélago River,11:10,Great-crested Flycatcher,A,1,
+Puesto Murciélago,10:51,Great Crested Flycatcher,V,1,in Bursera tree
+upper Murciélago River,11:10,Great Crested Flycatcher,A,1,
 upper Murciélago River,11:12,White-lored Gnatcatcher,V,2,
 upper Murciélago River,11:13,Orange-chinned Parakeet,A,2,
 upper Murciélago River,11:14,Red-billed Pigeon,V,1,flew across riverbed
@@ -195,8 +195,8 @@ upper Murciélago River,11:24,Scrub Euphonia,A,1,
 upper Murciélago River,11:26,Pale-billed Woodpecker,V,1,
 upper Murciélago River,11:28,White-necked Puffbird,V,2,"Francis doesn't know what tree, eating from termite nest"
 upper Murciélago River,11:31,Rufous-naped Wren,A,3,
-upper Murciélago River,11:37,Hoffman's Woodpecker,A/V,2,
-upper Murciélago River,11:37,Boat-billed Flycatcher,A/V,1,Hoffman's chased off Boat-billed Flycatcher
+upper Murciélago River,11:37,Hoffmann's Woodpecker,A/V,2,
+upper Murciélago River,11:37,Boat-billed Flycatcher,A/V,1,Hoffmann's chased off Boat-billed Flycatcher
 upper Murciélago River,11:40,Brown-crested Flycatcher,A/V,1,
 upper Murciélago River,11:40,Streak-backed Oriole,V,1,
 upper Murciélago River,11:42,Black-headed Trogon,V,1,
@@ -207,7 +207,7 @@ upper Murciélago River,NA,Squirrel Cuckoo,V,1,
 upper Murciélago River,NA,Rufous-naped Wren,V,4,
 upper Murciélago River,NA,Orange-chinned Parakeet,A,2,
 upper Murciélago River,NA,Scrub Euphonia,A,2,
-Bahía Tomás,13:37,Hoffman's Woodpecker,V,2,at entrance
+Bahía Tomás,13:37,Hoffmann's Woodpecker,V,2,at entrance
 Bahía Tomás,13:37,Rufous-naped Wren,A,1,at entrance
 Bahía Tomás,13:37,Prothonotary Warbler,V,1,at entrance
 Bahía Tomás,13:37,Streak-backed Oriole,V,1,at entrance
@@ -262,12 +262,12 @@ Bahía Tomás,15:23,Brown Pelican,V,3,on modules
 Bahía Tomás,15:26,Ringed Kingfisher,V,1,flying
 Bahía Tomás,NA,Yellow-naped Parrot,V,2,flyover
 Bahía Tomás,NA,Red-billed Pigeon,V,1,flyover
-Bahía Tomás,NA,Common Black-Hawk,A,1,heard in mangrove
+Bahía Tomás,NA,Common Black Hawk,A,1,heard in mangrove
 Bahía Tomás,15:33,Bare-throated Tiger-Heron,V,1,in mudflat
-Bahía Tomás,15:38,Common Black-Hawk,V,1,"soaring, feet hanging down"
+Bahía Tomás,15:38,Common Black Hawk,V,1,"soaring, feet hanging down"
 Bahía Tomás,15:38,Turkey Vulture,V,1,soaring
 Bahía Tomás,15:38,Great Kiskadee,A,1,
-Bahía Tomás,15:42,Great-crested Flycatcher,A,1,
+Bahía Tomás,15:42,Great Crested Flycatcher,A,1,
 Bahía Tomás,15:46,White-browed Gnatcatcher,V,2,in black mangrove
 Bahía Tomás,15:47,Inca Dove,V,1,perched in black mangrove
 Bahía Tomás,15:52,Black Vulture,V,1,"in mangrove tree, loud snorting [nest found by FJJ in Nov]"
@@ -286,7 +286,7 @@ Bahía Tomás,16:21,Yellow-headed Caracara,V,1,flying
 Bahía Tomás,16:22,Black-headed Trogon,V,1,in black mangrove
 Bahía Tomás,16:23,Social Flycatcher,A,1,
 Bahía Tomás,16:26,Wilson's Plover,V,27,"in salinas, came out of drainage ditch and in holes on ground"
-Bahía Tomás,16:30,White-throated Parrot,A/V,6,flying and calling
+Bahía Tomás,16:30,White-fronted Parrot,A/V,6,flying and calling
 Bahía Tomás,16:33,Wood Stork,V,1,flying
 Bahía Tomás,16:39,Inca Dove,V,1,flying
 Bahía Tomás,16:40,Green Heron,V,1,"in drainage ditch in salinas, photo"

@@ -15,14 +15,120 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
+library(janitor) # cleaning column names
+library(BiodiversityR) # to make rank abundance curve
 ```
 
 ## Data
 ```{r}
+# taxon info from NACC
+taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
+
 # Murcielago
-murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv"))
+murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv")) %>% 
+  mutate(sitio = "murci") %>% 
+  clean_names() %>% 
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # Leiva
-leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv"))
+leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv")) %>% 
+  mutate(sitio = "leiva") %>% 
+  clean_names() %>% 
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+
+# Murcielago and Leiva together in one data frame 
+birds <- rbind(murci, leiva) 
 ```
+
+# 1. Observations by family
+
+## a. Leiva
+
+```{r}
+leiva_families <- leiva %>% 
+  # summarizing observations by family
+  group_by(family) %>% 
+  summarize(sum_obs = sum(numero)) %>% 
+  ungroup() %>% 
+  # set the factor levels to be in descending order by sum_obs
+  arrange(-sum_obs) %>% 
+  mutate(family = fct_inorder(family))
+
+ggplot(leiva_families,
+       aes(x = family, y = sum_obs)) +
+  geom_col(aes(fill = family)) +
+  geom_text(aes(label = sum_obs), nudge_y = 2) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 53)) +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = -45, hjust = 0)) +
+  labs(x = "Family", y = "Total observations",
+       title = "Leiva observations by family")
+```
+
+## b. Murciélago
+
+```{r}
+murci_families <- murci %>% 
+  # summarizing observations by family
+  group_by(family) %>% 
+  summarize(sum_obs = sum(numero)) %>% 
+  ungroup() %>% 
+  # set the factor levels to be in descending order by sum_obs
+  arrange(-sum_obs) %>% 
+  mutate(family = fct_inorder(family))
+
+ggplot(murci_families,
+       aes(x = family, y = sum_obs)) +
+  geom_col(aes(fill = family)) +
+  geom_text(aes(label = sum_obs), nudge_y = 5) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 235)) +
+  theme_classic() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = -45, hjust = 0)) +
+  labs(x = "Family", y = "Total observations",
+       title = "Murciélago observations by family")
+```
+
+# 2. Rank abundance
+
+```{r}
+birds_ra_df <- birds %>% 
+  select(sitio, especie, numero) %>% 
+  group_by(sitio, especie) %>% 
+  summarize(sum_obs = sum(numero)) %>% 
+  pivot_wider(names_from = especie, values_from = sum_obs) %>% 
+  column_to_rownames("sitio") %>% 
+  replace(is.na(.), 0)
+
+env <- tribble(
+  ~sitio,
+  "leiva",
+  "murci"
+) %>% 
+  as.data.frame() %>% 
+  mutate(sitio = as_factor(sitio))
+
+birds_ra_data <- rankabuncomp(x = birds_ra_df, 
+                              y = env, factor = "sitio", 
+                              scale = "proportion", 
+                              legend = FALSE, specnames = c(1:30),
+                              return.data = TRUE)
+
+ggplot(birds_ra_data, aes(x = rank, y = abundance))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
