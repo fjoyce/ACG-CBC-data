@@ -99,7 +99,12 @@ all_species <- birds %>%
   # replace any NA with "no"
   replace(is.na(.), "no") %>% 
   # arrange in order by family
-  arrange(factor(family, levels = family_levels)) 
+  arrange(factor(family, levels = family_levels)) %>% 
+  # replace the missing `family` value for the sloth
+  mutate(family = case_when(
+    family == "no" ~ "Choloepodidae (Mammalia)",
+    TRUE ~ as.character(as.character(family))
+  ))
 
 # finding the total species observed at Murciélago
 murci_total_spp <- unique(murci$especie) %>% 
@@ -124,7 +129,7 @@ How many species did we see on both counts?
 We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp` at Leiva.  
 
 ```{r}
-head(all_species, 10) %>% 
+all_species %>% 
   gt(groupname_col = "family") %>% 
   tab_header(title = md("Species observed")) %>% 
   # indent the species
