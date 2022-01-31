@@ -1,0 +1,304 @@
+---
+title: "CBC 2021 data visualization"
+author: "An Bui"
+date: "January 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+```
+
+# 0. Introduction
+
+## a. Where'd the data come from?
+
+The data presented below are observations from the Santa Rosa count on the 28th of December 2021 (FHJ, MH, AB) and the Cacao count on the 30th of December 2021 (FHJ, RVJ, MH, AB). 
+
+## b. Organization
+
+This document is set up to exclude all the code used to generate the figures and tables for ease of reading. If you are interested in the code and explanations of how it works, you can find it outlined [here]().
+
+```{r libraries-data, message = FALSE, warning = FALSE}
+###########################################
+### 1. libraries
+###########################################
+library(tidyverse) # general manipulation
+library(here) # organizing directories
+library(janitor) # cleaning column names
+library(BiodiversityR) # to make rank abundance curve
+library(ggrepel) # repel ggplot text labels
+library(tanagR) # color palettes inspired by members of the Thraupidae family
+library(gt) # making nice looking tables
+
+###########################################
+### 2. data
+###########################################
+# taxon info from NACC
+taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
+
+# Murcielago
+murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv")) %>% 
+  mutate(sitio = "murci") %>% 
+  clean_names() %>% 
+  # attach taxonomic info
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+
+# Leiva
+leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv")) %>% 
+  mutate(sitio = "leiva") %>% 
+  clean_names() %>% 
+  # attach taxonomic info
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+
+# Murcielago and Leiva together in one data frame 
+birds <- rbind(murci, leiva) 
+```
+
+# 1. Basic information
+
+## a. Code
+
+**How many species did we see on each count? How many species did we see on both counts?**  
+
+```{r how-many-species}
+family_levels <- taxon_nacc %>% 
+  select(family) %>% 
+  unique() %>% 
+  mutate(family = fct_inorder(family)) %>% 
+  pull(family)
+
+all_species <- birds %>% 
+  # get unique species for each site
+  select(sitio, family, especie) %>% 
+  unique() %>% 
+  # create a new column called observed
+  mutate(observed = "yes") %>% 
+  # create 2 new columns: murci and leiva, where the entries are yes/NA for an observation
+  pivot_wider(names_from = "sitio", values_from = "observed") %>% 
+  # replace any NA with "no"
+  replace(is.na(.), "no") %>% 
+  # arrange in order by family
+  arrange(factor(family, levels = family_levels)) %>% 
+  # replace the missing `family` value for the sloth
+  mutate(family = case_when(
+    family == "no" ~ "Choloepodidae (Mammalia)",
+    TRUE ~ as.character(as.character(family))
+  ))
+
+# finding the total species observed at Murciélago
+murci_total_spp <- unique(murci$especie) %>% 
+  length()
+
+# finding the total species observed at Leiva
+leiva_total_spp <- unique(leiva$especie) %>% 
+  length()
+```
+
+How many individual birds did we see (probably)?
+What was the proportion of observations that were heard vs. seen vs. both?
+
+How many species did we see on both counts? 
+
+
+
+## b. Outputs
+
+**How many species did we see on each count? How many species did we see on both counts?**  
+
+We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp` at Leiva.  
+
+```{r}
+all_species %>% 
+  gt(groupname_col = "family") %>% 
+  tab_header(title = md("Species observed")) %>% 
+  # indent the species
+  tab_style(
+    style = cell_text(indent = pct(5)), 
+    locations = cells_body(
+      columns = especie)
+  ) %>% 
+  # color the family rows
+  tab_style(
+    style = cell_fill(color = "lightgray"),
+    locations = cells_row_groups()
+  ) %>% 
+  # make the family rows bold
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
+
+
+# 2. Observations by family
+
+I was curious about the number of observations by family (I would not, for example, expect many observations of Trochilidae regardless of how many there may have been flitting around...). To do this, I calculated the total number of observed individuals for each family for each count, and made a bar graph displaying all families detected.
+
+## a. Code
+
+There are two code chunks here. The first calculates the total number of observed individuals of each family in each count. Since I'm doing this twice (once for `murci`, and once for `leiva`), I created a function called `family_summary` so that I wouldn't have to rewrite (or, realistically, copy/paste) the same code twice. The objects that come out of this are `murci_familiies` and `leiva_families`.
+
+```{r}
+family_summary <- function(df) {
+  df %>% 
+    group_by(family) %>% 
+    # summarizing observations by family
+    group_by(family) %>% 
+    summarize(sum_obs = sum(numero)) %>% 
+    ungroup() %>% 
+    # set the factor levels to be in descending order by sum_obs
+    arrange(-sum_obs) %>% 
+    mutate(family = fct_inorder(family))
+}
+
+murci_families <- family_summary(murci)
+
+leiva_families <- family_summary(leiva)
+```
+
+The second code chunk creates the bar plots: columns for each family with a label indicating how many individuals were observed. Similarly to what I did above, I created a function to put all the same code in one place. The objects here are called `murci_families_bar` and `leiva_families_bar`.
+
+```{r}
+barplot_format <- function(df) {
+  ggplot(df, aes(x = family, y = sum_obs)) +
+    geom_col(aes(fill = family)) +
+    geom_text(aes(label = sum_obs), nudge_y = max(df$sum_obs*0.02)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05))) +
+    theme_classic() +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = -45, hjust = 0, size = 14),
+          axis.title = element_text(size = 20),
+          title = element_text(size = 25), 
+          plot.margin = margin(2, 2, 2, 2, "cm")) 
+}
+
+murci_families_barplot <- barplot_format(murci_families) +
+  # use the Tangara chilensis color palette
+  scale_fill_manual(values = tanagr_palette("tangara_chilensis", n = 38, discrete = FALSE)) +
+  labs(x = "Family", y = "Total individuals observed",
+       title = "Murciélago observations by family")
+
+leiva_families_barplot <- barplot_format(leiva_families) +
+  # use the Cyanerpes cyaneus color palette
+  scale_fill_manual(values = tanagr_palette("cyanerpes_cyaneus", n = 34, discrete = FALSE)) +
+  labs(x = "Family", y = "Total individuals observed",
+       title = "Leiva observations by family")
+```
+
+## b. Plots
+
+```{r fig.width = 12, fig.height = 8}
+murci_families_barplot
+```
+
+We saw _a lot_ of Brown Pelicans on our Santa Rosa count. Also, lots of parrots! Seems they are not locally extinct after all.
+
+```{r fig.width = 12, fig.height = 8}
+leiva_families_barplot
+```
+
+It seems that we saw lots of tanagers (Thraupidae) at Leiva (not surprising!), followed by flycatchers (Tyrannidae), and cuckoos (Cuculidae, mostly Squirrel Cuckoos).    
+
+
+# 2. Rank abundance
+
+## a. What is a rank abundance curve?
+
+Rank abundance curves are plotted with the proportion (or raw number of) observations for each species on the y-axis, and rank on the x-axis. From these plots, you can glean information about how abundant species were in your data.
+
+## b. Code
+
+First, I'll make a data frame to calculate rank abundance where each column is a species (n = 150) and each row is a "site" (n = 2, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
+```{r message = FALSE}
+# use the `birds` data frame
+birds_ra_df <- birds %>% 
+  # select site, species, and number
+  select(sitio, especie, numero) %>% 
+  # calculate total number of observations per species per site
+  group_by(sitio, especie) %>% 
+  summarize(sum_obs = sum(numero)) %>% 
+  # spread out the data frame so that each column is a species
+  pivot_wider(names_from = especie, values_from = sum_obs) %>% 
+  column_to_rownames("sitio") %>% 
+  # replace any NA with 0
+  replace(is.na(.), 0)
+```
+
+I'll also make a data frame with the site information: not especially informative, but useful for plotting the data later.
+
+```{r}
+# use the `dplyr::tribble()` function
+env <- tribble(
+  # create one column called "sitio" with "leiva" and "murci"
+  ~sitio,
+  "leiva",
+  "murci") %>% 
+  # make sure this is a data.frame
+  as.data.frame() %>% 
+  # set the factors
+  mutate(sitio = as_factor(sitio))
+```
+
+To make the plot, I'll use the `BiodiversityR::rankabundance()` function to calculate rank abundance for Leiva and Murciélago.
+
+```{r warning = FALSE}
+ra_code <- function(sitio) {
+  rankabundance(x = birds_ra_df, 
+                y = env, factor = "sitio",
+                level = c(sitio)) %>% 
+    as.data.frame() %>% 
+    rownames_to_column("especie") %>% 
+    select(-plower, -pupper)
+}
+
+murci_ra_data <- ra_code("murci")
+
+leiva_ra_data <- ra_code("leiva")
+```
+
+Plot code below, with a function to keep things tidy.
+
+```{r}
+ra_formatting <- function(df) {
+  ggplot(df, aes(x = rank, y = proportion)) +
+    geom_line(size = 1) +
+    geom_point(size = 2) +
+    geom_text_repel(data = df %>% filter(rank < 10),
+                    aes(label = especie),     
+                    segment.curvature = -1e-20, point.padding = 0.2, 
+                    force_pull = 10, direction = "y", 
+                    nudge_x = 15, nudge_y = 0.1,
+                    size = 5, col = "red") +
+    theme_bw() +
+    theme(axis.title = element_text(size = 13),
+          title = element_text(size = 15))
+}
+
+murci_ra_plot <- ra_formatting(murci_ra_data) +
+  labs(x = "Rank", y = "Proportion of total individuals observed",
+       title = "Murciélago count rank abundance")
+
+leiva_ra_plot <- ra_formatting(leiva_ra_data) +
+  labs(x = "Rank", y = "Proportion of total individuals observed",
+       title = "Leiva count rank abundance")
+```
+
+## b. Plots
+
+```{r}
+murci_ra_plot
+
+leiva_ra_plot
+```
+
+A little test...
+
+
+
+
+
+
+
+
+
