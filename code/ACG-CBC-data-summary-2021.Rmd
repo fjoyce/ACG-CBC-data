@@ -4,22 +4,22 @@ author: "An Bui"
 date: "January 2022"
 output:
   html_document:
-    toc: true
+    toc: yes
     toc_depth: 4
     toc_float:
-      collapsed: false
+      collapsed: no
     theme: readable
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 # 0. Introduction
 
 ## a. Where'd the data come from?
 
-The data presented below are observations from the Cacao count on the 28th of December 2021 (FHJ, MH, AB) and the Leiva count on the 30th of December 2021 (FHJ, RVJ, MH, AB). 
+The data presented below are observations from the Santa Rosa count on the 28th of December 2021 (FHJ, MH, AB) and the Cacao count on the 30th of December 2021 (FHJ, RVJ, MH, AB). 
 
 ## b. Organization
 
@@ -38,7 +38,7 @@ library(janitor) # cleaning column names
 library(BiodiversityR) # to make rank abundance curve
 library(ggrepel) # repel ggplot text labels
 library(tanagR) # color palettes inspired by members of the Thraupidae family
-library(rlang) # for writing functions
+library(gt) # making nice looking tables
 ```
 
 ## b. Data
@@ -70,6 +70,86 @@ leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.cs
 # Murcielago and Leiva together in one data frame 
 birds <- rbind(murci, leiva) 
 ```
+
+# 2. Basic information
+
+## a. Code
+
+**How many species did we see on each count? How many species did we see on both counts?**  
+
+To answer this, I made a new data frame called `all_species` with a column for each species, and columns marking "yes" or "no" for observations. I also found the number of unique species for each count and saved that value as `murci_total_spp` and `leiva_total_spp`.  
+
+One tricky thing I wanted to do was order the species by family. To do this, I created a vector called `family_levels` that was a vector of all the families in the right order. Then, I could use that vector to order species by family.
+
+```{r}
+family_levels <- taxon_nacc %>% 
+  select(family) %>% 
+  unique() %>% 
+  mutate(family = fct_inorder(family)) %>% 
+  pull(family)
+
+all_species <- birds %>% 
+  # get unique species for each site
+  select(sitio, family, especie) %>% 
+  unique() %>% 
+  # create a new column called observed
+  mutate(observed = "yes") %>% 
+  # create 2 new columns: murci and leiva, where the entries are yes/NA for an observation
+  pivot_wider(names_from = "sitio", values_from = "observed") %>% 
+  # replace any NA with "no"
+  replace(is.na(.), "no") %>% 
+  # arrange in order by family
+  arrange(factor(family, levels = family_levels)) %>% 
+  # replace the missing `family` value for the sloth
+  mutate(family = case_when(
+    family == "no" ~ "Choloepodidae (Mammalia)",
+    TRUE ~ as.character(as.character(family))
+  ))
+
+# finding the total species observed at Murciélago
+murci_total_spp <- unique(murci$especie) %>% 
+  length()
+
+# finding the total species observed at Leiva
+leiva_total_spp <- unique(leiva$especie) %>% 
+  length()
+```
+
+How many individual birds did we see (probably)?
+What was the proportion of observations that were heard vs. seen vs. both?
+
+How many species did we see on both counts? 
+
+
+
+## b. Outputs
+
+**How many species did we see on each count? How many species did we see on both counts?**  
+
+We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp` at Leiva.  
+
+```{r}
+all_species %>% 
+  gt(groupname_col = "family") %>% 
+  tab_header(title = md("Species observed")) %>% 
+  # indent the species
+  tab_style(
+    style = cell_text(indent = pct(5)), 
+    locations = cells_body(
+      columns = especie)
+  ) %>% 
+  # color the family rows
+  tab_style(
+    style = cell_fill(color = "lightgray"),
+    locations = cells_row_groups()
+  ) %>% 
+  # make the family rows bold
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
+
 
 # 2. Observations by family
 
@@ -109,31 +189,32 @@ barplot_format <- function(df) {
     theme(legend.position = "none",
           axis.text.x = element_text(angle = -45, hjust = 0, size = 14),
           axis.title = element_text(size = 20),
-          title = element_text(size = 25)) 
+          title = element_text(size = 25), 
+          plot.margin = margin(2, 2, 2, 2, "cm")) 
 }
 
 murci_families_barplot <- barplot_format(murci_families) +
   # use the Tangara chilensis color palette
   scale_fill_manual(values = tanagr_palette("tangara_chilensis", n = 38, discrete = FALSE)) +
-  labs(x = "Family", y = "Total observations",
+  labs(x = "Family", y = "Total individuals observed",
        title = "Murciélago observations by family")
 
 leiva_families_barplot <- barplot_format(leiva_families) +
-  # use the Dacnis berlepschi color palette
-  scale_fill_manual(values = tanagr_palette("dacnis_berlepschi", n = 34, discrete = FALSE)) +
-  labs(x = "Family", y = "Total observations",
+  # use the Cyanerpes cyaneus color palette
+  scale_fill_manual(values = tanagr_palette("cyanerpes_cyaneus", n = 34, discrete = FALSE)) +
+  labs(x = "Family", y = "Total individuals observed",
        title = "Leiva observations by family")
 ```
 
 ## b. Plots
 
-```{r fig.width = 14, fig.height = 8}
+```{r fig.width = 12, fig.height = 8}
 murci_families_barplot
 ```
 
-We saw _a lot_ of Brown Pelicans on our Cacao count. Also, lots of parrots! Seems they are not locally extinct after all.
+We saw _a lot_ of Brown Pelicans on our Santa Rosa count. Also, lots of parrots! Seems they are not locally extinct after all.
 
-```{r fig.width = 14, fig.height = 8}
+```{r fig.width = 12, fig.height = 8}
 leiva_families_barplot
 ```
 
@@ -208,10 +289,10 @@ ra_formatting <- function(df) {
                     segment.curvature = -1e-20, point.padding = 0.2, 
                     force_pull = 10, direction = "y", 
                     nudge_x = 15, nudge_y = 0.1,
-                    size = 5) +
+                    size = 5, col = "red") +
     theme_bw() +
-    theme(axis.title = element_text(size = 20),
-          title = element_text(size = 25))
+    theme(axis.title = element_text(size = 13),
+          title = element_text(size = 15))
 }
 
 murci_ra_plot <- ra_formatting(murci_ra_data) +
