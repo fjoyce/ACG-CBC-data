@@ -23,7 +23,7 @@ The data presented below are observations from the Santa Rosa count on the 28th 
 
 ## b. Organization
 
-This document is set up to show all the code involved in the visualizations for transparency, and I've tried to annotate the code as much as possible so that folks can have a sense of what they're looking at. However, you can use the table of contents to the left to skip through the code walk-throughs to get to the plots. Additionally, a cleaned up, no-code version is available in PDF form [here]() if you would prefer that.
+This document is set up to show all the code involved in the visualizations for transparency, and I've tried to annotate the code as much as possible so that folks can have a sense of what they're looking at. However, you can use the table of contents to the left to skip through the code walk-throughs to get to the plots. Additionally, a cleaned up, no-code version is available in PDF form [here](https://fjoyce.github.io/ACG-CBC-data/code/ACG-CBC-data-summary-2021-no_code.pdf) if you would prefer that.
 
 # 1. Set up
 
@@ -113,20 +113,28 @@ murci_total_spp <- unique(murci$especie) %>%
 # finding the total species observed at Leiva
 leiva_total_spp <- unique(leiva$especie) %>% 
   length()
+
+# finding the species observed at both Leiva and Murciélago
+both_total_spp <- all_species %>% 
+  filter(murci == "yes" & leiva == "yes") %>% 
+  nrow()
 ```
 
-How many individual birds did we see (probably)?
-What was the proportion of observations that were heard vs. seen vs. both?
+**How many individual birds did we see (probably)?**  
 
-How many species did we see on both counts? 
+To answer this question, I calculated the sum of individuals from the `numero` column from Murciélago and Leiva.
 
+```{r}
+murci_ind <- sum(murci$numero)
 
+leiva_ind <- sum(leiva$numero)
+```
 
 ## b. Outputs
 
 **How many species did we see on each count? How many species did we see on both counts?**  
 
-We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp` at Leiva.  
+We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp - 1` at Leiva. We saw `r both_total_spp` species in both places. A table of the species we saw is below.  
 
 ```{r}
 all_species %>% 
@@ -150,6 +158,9 @@ all_species %>%
   )
 ```
 
+**How many individual birds did we see (probably)?**  
+
+We saw `r murci_ind` at Murciélago and `r leiva_ind - 1` at Leiva.  
 
 # 2. Observations by family
 
@@ -311,14 +322,5 @@ murci_ra_plot
 
 leiva_ra_plot
 ```
-
-A little test...
-
-
-
-
-
-
-
 
 
