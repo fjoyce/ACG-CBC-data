@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", tidy.opts=list(width.cutoff=80), tidy=TRUE)
 ```
 
 # 0. Introduction
@@ -15,14 +15,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
 
 The data presented below are observations from the Santa Rosa count on the 28th of December 2021 (FHJ, MH, AB) and the Cacao count on the 30th of December 2021 (FHJ, RVJ, MH, AB). 
 
-## b. Organization
-
-This document is set up to exclude all the code used to generate the figures and tables for ease of reading. If you are interested in the code and explanations of how it works, you can find it outlined [here]().
-
-```{r libraries-data, message = FALSE, warning = FALSE}
-###########################################
-### 1. libraries
-###########################################
+```{r message = FALSE, warning = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
@@ -30,10 +23,11 @@ library(BiodiversityR) # to make rank abundance curve
 library(ggrepel) # repel ggplot text labels
 library(tanagR) # color palettes inspired by members of the Thraupidae family
 library(gt) # making nice looking tables
+```
 
-###########################################
-### 2. data
-###########################################
+```{r message = FALSE}
+## b. Data
+
 # taxon info from NACC
 taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
 
@@ -55,13 +49,11 @@ leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.cs
 birds <- rbind(murci, leiva) 
 ```
 
-# 1. Basic information
+# 2. Basic information
 
-## a. Code
+```{r}
+# **How many species did we see on each count? How many species did we see on both counts?**  
 
-**How many species did we see on each count? How many species did we see on both counts?**  
-
-```{r how-many-species}
 family_levels <- taxon_nacc %>% 
   select(family) %>% 
   unique() %>% 
@@ -93,20 +85,26 @@ murci_total_spp <- unique(murci$especie) %>%
 # finding the total species observed at Leiva
 leiva_total_spp <- unique(leiva$especie) %>% 
   length()
+
+# finding the species observed at both Leiva and Murciélago
+both_total_spp <- all_species %>% 
+  filter(murci == "yes" & leiva == "yes") %>% 
+  nrow()
 ```
 
-How many individual birds did we see (probably)?
-What was the proportion of observations that were heard vs. seen vs. both?
+```{r}
+# **How many individual birds did we see (probably)?**  
 
-How many species did we see on both counts? 
+murci_ind <- sum(murci$numero)
 
-
+leiva_ind <- sum(leiva$numero)
+```
 
 ## b. Outputs
 
 **How many species did we see on each count? How many species did we see on both counts?**  
 
-We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp` at Leiva.  
+We saw `r murci_total_spp` at Murciélago, and `r leiva_total_spp - 1` at Leiva. We saw `r both_total_spp` species in both places. A table of the species we saw is below.  
 
 ```{r}
 all_species %>% 
@@ -130,14 +128,13 @@ all_species %>%
   )
 ```
 
+**How many individual birds did we see (probably)?**  
+
+We saw `r murci_ind` at Murciélago and `r leiva_ind - 1` at Leiva.  
 
 # 2. Observations by family
 
 I was curious about the number of observations by family (I would not, for example, expect many observations of Trochilidae regardless of how many there may have been flitting around...). To do this, I calculated the total number of observed individuals for each family for each count, and made a bar graph displaying all families detected.
-
-## a. Code
-
-There are two code chunks here. The first calculates the total number of observed individuals of each family in each count. Since I'm doing this twice (once for `murci`, and once for `leiva`), I created a function called `family_summary` so that I wouldn't have to rewrite (or, realistically, copy/paste) the same code twice. The objects that come out of this are `murci_familiies` and `leiva_families`.
 
 ```{r}
 family_summary <- function(df) {
@@ -156,8 +153,6 @@ murci_families <- family_summary(murci)
 
 leiva_families <- family_summary(leiva)
 ```
-
-The second code chunk creates the bar plots: columns for each family with a label indicating how many individuals were observed. Similarly to what I did above, I created a function to put all the same code in one place. The objects here are called `murci_families_bar` and `leiva_families_bar`.
 
 ```{r}
 barplot_format <- function(df) {
@@ -207,9 +202,6 @@ It seems that we saw lots of tanagers (Thraupidae) at Leiva (not surprising!), f
 
 Rank abundance curves are plotted with the proportion (or raw number of) observations for each species on the y-axis, and rank on the x-axis. From these plots, you can glean information about how abundant species were in your data.
 
-## b. Code
-
-First, I'll make a data frame to calculate rank abundance where each column is a species (n = 150) and each row is a "site" (n = 2, either "leiva" or "murci"). The cells are filled with the total number of observations for each species.
 ```{r message = FALSE}
 # use the `birds` data frame
 birds_ra_df <- birds %>% 
@@ -225,7 +217,6 @@ birds_ra_df <- birds %>%
   replace(is.na(.), 0)
 ```
 
-I'll also make a data frame with the site information: not especially informative, but useful for plotting the data later.
 
 ```{r}
 # use the `dplyr::tribble()` function
@@ -239,8 +230,6 @@ env <- tribble(
   # set the factors
   mutate(sitio = as_factor(sitio))
 ```
-
-To make the plot, I'll use the `BiodiversityR::rankabundance()` function to calculate rank abundance for Leiva and Murciélago.
 
 ```{r warning = FALSE}
 ra_code <- function(sitio) {
@@ -256,8 +245,6 @@ murci_ra_data <- ra_code("murci")
 
 leiva_ra_data <- ra_code("leiva")
 ```
-
-Plot code below, with a function to keep things tidy.
 
 ```{r}
 ra_formatting <- function(df) {
@@ -291,14 +278,5 @@ murci_ra_plot
 
 leiva_ra_plot
 ```
-
-A little test...
-
-
-
-
-
-
-
 
 
