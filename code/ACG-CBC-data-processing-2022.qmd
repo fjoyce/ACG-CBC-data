@@ -6,13 +6,13 @@ editor: source
 
 # 1. Description
 
-This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).
+This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).  
 
 # 2. Libraries, data, function
 
 These are the packages I'm using to clean up the data and tally counts.
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
@@ -20,7 +20,7 @@ library(janitor) # cleaning column names
 
 These are the data files that are useful to have.
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 # taxon info from NACC to organize final tallies by family
 taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
 
@@ -75,6 +75,8 @@ cafetal_lejos_spp <- unique(cafetal_lejos$especie) %>%
 
 cafetal_lejos_tally <- count_function(cafetal_lejos)
 
+head(cafetal_lejos_tally)
+
 # write_csv(cafetal_lejos_tally, here::here("tallies", "cafetal_lejos-2022.csv"))
 ```
 
@@ -84,7 +86,9 @@ cafetal_wh <- cafetal_lejos %>%
   filter(localidad == "Cafetal Road intersection with Rio Cuajiniquil") %>% 
   count_function()
 
-# write_csv(cafetal_wh, here::here("tallies", "cafetal-river_crossing.csv"))
+head(cafetal_wh)
+
+# write_csv(cafetal_wh, here::here("tallies", "cafetal-river_crossing.csv")) 
 ```
 
 # 2. Sensoria data
@@ -95,12 +99,17 @@ sensoria_spp <- unique(sensoria$especie) %>%
 
 sensoria_tally <- count_function(sensoria)
 
+head(sensoria_tally)
+
 #write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
 ```
 
 # 3. Post-processing in Excel
 
 The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`.
+
+
+
 
 
 
