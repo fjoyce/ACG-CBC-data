@@ -36,7 +36,9 @@ murci <- read_csv(here::here("data", "CRSR_CBC_2021_Murcielago_data_entry.csv"))
   mutate(sitio = "murci") %>% 
   clean_names() %>% 
   # attach taxonomic info
-  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))%>% 
+  #Remove records for Caracara cheriway as this species was merged into C. plancus and keeping both results in double-counting
+  filter(species != "Caracara cheriway")
 
 # Leiva
 leiva <- read_csv(here::here("data", "CRCA_CBC_2021_Leiva_Sensoria_data_entry.csv")) %>% 
