@@ -1,0 +1,106 @@
+---
+title: "2022 CBC data processing pipeline"
+format: html
+editor: source
+---
+
+# 1. Description
+
+This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).
+
+# 2. Libraries, data, function
+
+These are the packages I'm using to clean up the data and tally counts.
+
+```{r warning = FALSE}
+library(tidyverse) # general manipulation
+library(here) # organizing directories
+library(janitor) # cleaning column names
+```
+
+These are the data files that are useful to have.
+
+```{r warning = FALSE}
+# taxon info from NACC to organize final tallies by family
+taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
+
+family_levels <- taxon_nacc %>% 
+  select(family) %>% 
+  unique() %>% 
+  mutate(family = fct_inorder(family)) %>% 
+  pull(family)
+
+# data from Cafetal Lejos route
+cafetal_lejos <- read_csv(here::here("data", "CRSR_CBC_2022_Cafetal_data_entry.csv")) %>% 
+  clean_names() %>% 
+  # attach taxonomic info
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+
+# data from Sensoria-Buenos Aires route
+sensoria <- read_csv(here::here("data", "CRCA_CBC_2022_Sensoria_data_entry.csv")) %>% 
+  clean_names() %>% 
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+```
+
+This is the function to summarize individual counts by species and sort species by family. This depends on the species column being named "especie" and the individual count column being named "numero".
+
+```{r warning = FALSE}
+count_function <- function(df) {
+  
+  # find columns in data frame called "especie" and "numero"
+  test <- str_subset(colnames(df), "especie|numero")
+  
+  # if else statement
+  # if columns from data frame are actually "especie" and "numero", do the summary
+  if(identical(test, c("especie", "numero"))) {
+    df %>% 
+      group_by(especie) %>% 
+      summarize(sum_ind = sum(numero)) %>% 
+      ungroup() %>% 
+      # attach taxonomic info
+      left_join(., taxon_nacc, by = c("especie" = "common_name")) %>% 
+      arrange(factor(family, levels = family_levels)) %>% 
+      select(especie, sum_ind)
+    # else throw an error
+  } else {
+    warning("Whoops! You might be missing columns 'especie' and 'numero'. Double check your data frame!")
+  }
+}
+```
+
+# 1. Cafetal data
+```{r warning = FALSE}
+cafetal_lejos_spp <- unique(cafetal_lejos$especie) %>% 
+  length()
+
+cafetal_lejos_tally <- count_function(cafetal_lejos)
+
+# write_csv(cafetal_lejos_tally, here::here("tallies", "cafetal_lejos-2022.csv"))
+```
+
+## a. Cafetal watering hole/river crossing
+```{r warning = FALSE}
+cafetal_wh <- cafetal_lejos %>% 
+  filter(localidad == "Cafetal Road intersection with Rio Cuajiniquil") %>% 
+  count_function()
+
+# write_csv(cafetal_wh, here::here("tallies", "cafetal-river_crossing.csv"))
+```
+
+# 2. Sensoria data
+```{r warning = FALSE}
+sensoria_spp <- unique(sensoria$especie) %>% 
+  length()
+# 96 species
+
+sensoria_tally <- count_function(sensoria)
+
+#write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
+```
+
+# 3. Post-processing in Excel
+
+The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`.
+
+
+
