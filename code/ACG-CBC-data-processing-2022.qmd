@@ -12,7 +12,7 @@ This is a workflow for data processing from entering observations to tallying sp
 
 These are the packages I'm using to clean up the data and tally counts.
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
@@ -20,7 +20,7 @@ library(janitor) # cleaning column names
 
 These are the data files that are useful to have.
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 # taxon info from NACC to organize final tallies by family
 taxon_nacc <- read_csv(here::here("data", "NACC_list_species_2022-01-29.csv"))
 
