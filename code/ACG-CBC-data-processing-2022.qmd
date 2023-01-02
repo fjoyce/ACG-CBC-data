@@ -6,7 +6,7 @@ editor: source
 
 # 1. Description
 
-This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).
+This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).  
 
 # 2. Libraries, data, function
 
@@ -75,6 +75,8 @@ cafetal_lejos_spp <- unique(cafetal_lejos$especie) %>%
 
 cafetal_lejos_tally <- count_function(cafetal_lejos)
 
+head(cafetal_lejos_tally)
+
 # write_csv(cafetal_lejos_tally, here::here("tallies", "cafetal_lejos-2022.csv"))
 ```
 
@@ -83,6 +85,8 @@ cafetal_lejos_tally <- count_function(cafetal_lejos)
 cafetal_wh <- cafetal_lejos %>% 
   filter(localidad == "Cafetal Road intersection with Rio Cuajiniquil") %>% 
   count_function()
+
+head(cafetal_wh)
 
 # write_csv(cafetal_wh, here::here("tallies", "cafetal-river_crossing.csv"))
 ```
@@ -94,6 +98,8 @@ sensoria_spp <- unique(sensoria$especie) %>%
 # 96 species
 
 sensoria_tally <- count_function(sensoria)
+
+head(sensoria_tally)
 
 #write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
 ```
