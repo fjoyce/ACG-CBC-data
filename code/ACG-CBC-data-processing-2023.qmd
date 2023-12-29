@@ -2,6 +2,7 @@
 title: "2023 CBC data processing"
 format: html
 editor: source
+toc: true
 ---
 
 # 1. Description
@@ -15,6 +16,7 @@ library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
 library(readxl) # using the xlsx file
+library(tanagR) # color palettes inspired by members of the Thraupidae family
 ```
 
 These are the data files that are useful to have.
@@ -22,7 +24,7 @@ These are the data files that are useful to have.
 ```{r warning = FALSE, message = FALSE}
 # taxon info from NACC to organize final tallies by family
 taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_2022-01-29.csv")) %>% 
-  # changing common names
+  # changing common names for 2023
   mutate(common_name = case_when(
     common_name == "Yellow-olive Flycatcher" ~ "Yellow-olive Flatbill",
     common_name == "Cattle Egret" ~ "Western Cattle Egret",
@@ -35,7 +37,7 @@ family_levels <- taxon_nacc %>%
   mutate(family = fct_inorder(family)) %>% 
   pull(family)
 
-# data from Cafetal Lejos route
+# data from Murcielago
 murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
   clean_names() %>% 
   # attach taxonomic info
@@ -73,7 +75,7 @@ count_function <- function(df) {
 }
 ```
 
-# 1. Murcielago datq
+# 3. Murcielago data
 ```{r warning = FALSE}
 murci_spp <- unique(murci$especie) %>% 
   length()
@@ -85,20 +87,59 @@ head(murci_tally)
 # write_csv(murci_tally, here::here("tallies", "murci-2023.csv"))
 ```
 
-# 2. Sensoria data
+# 4. Sensoria data
 ```{r warning = FALSE}
-sensoria_spp <- unique(sensoria$especie) %>% 
-  length()
+# sensoria_spp <- unique(sensoria$especie) %>% 
+#   length()
 # 96 species
 
-sensoria_tally <- count_function(sensoria)
+# sensoria_tally <- count_function(sensoria)
 
-head(sensoria_tally)
+# head(sensoria_tally)
 
 #write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
 ```
 
-# 3. Post-processing in Excel
+# 5. Post-processing in Excel
 
-The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`.
+The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`. One example is from the Murcielago total:
+`=VLOOKUP(C185, 'murci-2023'!A$2:B$63, 2, FALSE)`.
+
+# 6. Some visualizations
+
+```{r}
+family_summary <- function(df) {
+  df %>% 
+    group_by(family) %>% 
+    # summarizing observations by family
+    group_by(family) %>% 
+    summarize(sum_obs = sum(numero)) %>% 
+    ungroup() %>% 
+    # set the factor levels to be in descending order by sum_obs
+    arrange(sum_obs) %>% 
+    mutate(family = fct_inorder(family))
+}
+
+murci_families <- family_summary(murci)
+
+barplot_format <- function(df) {
+  ggplot(df, aes(x = sum_obs, y = family)) +
+    geom_col(aes(fill = family)) +
+    geom_text(aes(label = sum_obs), nudge_x = max(df$sum_obs*0.02)) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05))) +
+    labs(x = "Total individuals observed", y = "Family") +
+    theme_classic() +
+    theme(legend.position = "none",
+          axis.title = element_text(size = 20),
+          title = element_text(size = 25), 
+          plot.margin = margin(2, 2, 2, 2, "cm")) 
+}
+
+murci_families_barplot <- barplot_format(murci_families) +
+  # use the Tangara chilensis color palette
+  scale_fill_manual(values = tanagr_palette("tangara_chilensis", n = 32, discrete = FALSE)) +
+  labs(title = "Murciélago observations by family")
+
+murci_families_barplot
+```
 
