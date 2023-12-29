@@ -1,28 +1,33 @@
 ---
-title: "2022 CBC data processing pipeline"
+title: "2023 CBC data processing"
 format: html
 editor: source
 ---
 
 # 1. Description
 
-This is a workflow for data processing from entering observations to tallying species counts to go into the intermediate excel file to send to compilers. This workflow depends on data being entered for each observation of a species, but doesn't require times, localities (i.e. points or segments).  
+This is copied from the 2022 pipeline. 
 
 # 2. Libraries, data, function
-
-These are the packages I'm using to clean up the data and tally counts.
 
 ```{r warning = FALSE, message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
+library(readxl) # using the xlsx file
 ```
 
 These are the data files that are useful to have.
 
 ```{r warning = FALSE, message = FALSE}
 # taxon info from NACC to organize final tallies by family
-taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_2022-01-29.csv"))
+taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_2022-01-29.csv")) %>% 
+  # changing common names
+  mutate(common_name = case_when(
+    common_name == "Yellow-olive Flycatcher" ~ "Yellow-olive Flatbill",
+    common_name == "Cattle Egret" ~ "Western Cattle Egret",
+    TRUE ~ common_name
+  ))
 
 family_levels <- taxon_nacc %>% 
   select(family) %>% 
@@ -31,15 +36,15 @@ family_levels <- taxon_nacc %>%
   pull(family)
 
 # data from Cafetal Lejos route
-cafetal_lejos <- read_csv(here::here("data", "data-entry", "CRSR_CBC_2022_Cafetal_data_entry.csv")) %>% 
+murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
   clean_names() %>% 
   # attach taxonomic info
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # data from Sensoria-Buenos Aires route
-sensoria <- read_csv(here::here("data", "data-entry", "CRCA_CBC_2022_Sensoria_data_entry.csv")) %>% 
-  clean_names() %>% 
-  left_join(., taxon_nacc, by = c("especie" = "common_name"))
+# sensoria <- read_csv(here::here("data", "CRCA_CBC_2022_Sensoria_data_entry.csv")) %>% 
+#   clean_names() %>% 
+#   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 ```
 
 This is the function to summarize individual counts by species and sort species by family. This depends on the species column being named "especie" and the individual count column being named "numero".
@@ -68,27 +73,16 @@ count_function <- function(df) {
 }
 ```
 
-# 1. Cafetal data
+# 1. Murcielago datq
 ```{r warning = FALSE}
-cafetal_lejos_spp <- unique(cafetal_lejos$especie) %>% 
+murci_spp <- unique(murci$especie) %>% 
   length()
 
-cafetal_lejos_tally <- count_function(cafetal_lejos)
+murci_tally <- count_function(murci)
 
-head(cafetal_lejos_tally)
+head(murci_tally)
 
-# write_csv(cafetal_lejos_tally, here::here("tallies", "cafetal_lejos-2022.csv"))
-```
-
-## a. Cafetal watering hole/river crossing
-```{r warning = FALSE}
-cafetal_wh <- cafetal_lejos %>% 
-  filter(localidad == "Cafetal Road intersection with Rio Cuajiniquil") %>% 
-  count_function()
-
-head(cafetal_wh)
-
-# write_csv(cafetal_wh, here::here("tallies", "cafetal-river_crossing.csv")) 
+# write_csv(murci_tally, here::here("tallies", "murci-2023.csv"))
 ```
 
 # 2. Sensoria data
@@ -107,25 +101,4 @@ head(sensoria_tally)
 # 3. Post-processing in Excel
 
 The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`.
-
-# 4. (not ACG) San Gerardo data
-
-```{r}
-san_gerardo <- read_csv(here::here("data/san-gerardo", "San_Gerardo-Alexis_Torres_2023_CBC.csv")) %>% 
-  clean_names() %>% 
-  left_join(., taxon_nacc, by = c("especie" = "common_name"))
-
-san_gerardo_spp <- unique(san_gerardo$especie) %>% 
-  length()
-
-san_gerardo_tally <- count_function(san_gerardo)
-
-# write_csv(san_gerardo_tally, here::here("tallies", "san-gerardo-tally-2023.csv"))
-```
-
-
-
-
-
-
 
