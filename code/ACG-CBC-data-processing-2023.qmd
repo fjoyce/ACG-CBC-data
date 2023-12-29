@@ -108,6 +108,9 @@ The spreadsheet to report route data to compilers has a column to enter count nu
 # 6. Some visualizations
 
 ```{r}
+#| fig-height: 8
+#| fig-width: 10
+
 family_summary <- function(df) {
   df %>% 
     group_by(family) %>% 
