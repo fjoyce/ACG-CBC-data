@@ -28,14 +28,18 @@ taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_20
   mutate(common_name = case_when(
     common_name == "Yellow-olive Flycatcher" ~ "Yellow-olive Flatbill",
     common_name == "Cattle Egret" ~ "Western Cattle Egret",
-    TRUE ~ common_name
-  ))
+    common_name == "Olive-striped Flycatcher" ~ "Olive-streaked Flycatcher",
+    common_name == "Grayish Saltator" ~ "Cinnamon-bellied Saltator",
+    TRUE ~ common_name 
+  )) %>% 
+  # caracara split: using Caracara plancus
+  filter(species != "Caracara cheriway")
 
-family_levels <- taxon_nacc %>% 
-  select(family) %>% 
-  unique() %>% 
-  mutate(family = fct_inorder(family)) %>% 
-  pull(family)
+# family_levels <- taxon_nacc %>% 
+#   select(family) %>% 
+#   unique() %>% 
+#   mutate(family = fct_inorder(family)) %>% 
+#   pull(family)
 
 # data from Murcielago
 murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
@@ -44,9 +48,9 @@ murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_da
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # data from Sensoria-Buenos Aires route
-# sensoria <- read_csv(here::here("data", "CRCA_CBC_2022_Sensoria_data_entry.csv")) %>% 
-#   clean_names() %>% 
-#   left_join(., taxon_nacc, by = c("especie" = "common_name"))
+sensoria <- read_xlsx(here::here("data", "data-entry", "CRCA_CBC_2023_Sensoria_data_entry.xlsx"), sheet = "datos") %>%
+  clean_names() %>%
+  left_join(., taxon_nacc, by = c("especie" = "common_name"))
 ```
 
 This is the function to summarize individual counts by species and sort species by family. This depends on the species column being named "especie" and the individual count column being named "numero".
@@ -89,13 +93,13 @@ head(murci_tally)
 
 # 4. Sensoria data
 ```{r warning = FALSE}
-# sensoria_spp <- unique(sensoria$especie) %>% 
-#   length()
-# 96 species
+sensoria_spp <- unique(sensoria$especie) %>%
+  length()
+# 106 species
 
-# sensoria_tally <- count_function(sensoria)
+sensoria_tally <- count_function(sensoria)
 
-# head(sensoria_tally)
+head(sensoria_tally)
 
 #write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
 ```
@@ -133,9 +137,9 @@ barplot_format <- function(df) {
     labs(x = "Total individuals observed", y = "Family") +
     theme_classic() +
     theme(legend.position = "none",
-          axis.title = element_text(size = 20),
-          title = element_text(size = 25), 
-          plot.margin = margin(2, 2, 2, 2, "cm")) 
+          axis.title = element_text(size = 12),
+          title = element_text(size = 14),
+          axis.ticks.y = element_blank())
 }
 
 murci_families_barplot <- barplot_format(murci_families) +
