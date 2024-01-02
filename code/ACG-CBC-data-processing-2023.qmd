@@ -95,13 +95,13 @@ head(murci_tally)
 ```{r warning = FALSE}
 sensoria_spp <- unique(sensoria$especie) %>%
   length()
-# 106 species
+# 105 species
 
 sensoria_tally <- count_function(sensoria)
 
 head(sensoria_tally)
 
-#write_csv(sensoria_tally, here::here("tallies", "sensoria-2022.csv"))
+# write_csv(sensoria_tally, here::here("tallies", "sensoria-2023.csv"))
 ```
 
 # 5. Post-processing in Excel
