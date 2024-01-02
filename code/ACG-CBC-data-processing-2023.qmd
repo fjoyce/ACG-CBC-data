@@ -17,6 +17,7 @@ library(here) # organizing directories
 library(janitor) # cleaning column names
 library(readxl) # using the xlsx file
 library(tanagR) # color palettes inspired by members of the Thraupidae family
+library(ggrepel)
 ```
 
 These are the data files that are useful to have.
@@ -35,11 +36,11 @@ taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_20
   # caracara split: using Caracara plancus
   filter(species != "Caracara cheriway")
 
-# family_levels <- taxon_nacc %>% 
-#   select(family) %>% 
-#   unique() %>% 
-#   mutate(family = fct_inorder(family)) %>% 
-#   pull(family)
+family_levels <- taxon_nacc %>%
+  select(family) %>%
+  unique() %>%
+  mutate(family = fct_inorder(family)) %>%
+  pull(family)
 
 # data from Murcielago
 murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
@@ -129,24 +130,83 @@ family_summary <- function(df) {
 
 murci_families <- family_summary(murci)
 
-barplot_format <- function(df) {
+sensoria_families <- family_summary(sensoria)
+
+family_plot <- function(df) {
   ggplot(df, aes(x = sum_obs, y = family)) +
-    geom_col(aes(fill = family)) +
-    geom_text(aes(label = sum_obs), nudge_x = max(df$sum_obs*0.02)) +
+    geom_segment(aes(x = 0, xend = sum_obs, yend = family, color = family), size = 1) +
+    geom_point(aes(color = family), size = 2.5) +
+    geom_text(aes(label = sum_obs), nudge_x = max(df$sum_obs*0.03), size = 3) +
     scale_x_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05))) +
     labs(x = "Total individuals observed", y = "Family") +
     theme_classic() +
     theme(legend.position = "none",
           axis.title = element_text(size = 12),
           title = element_text(size = 14),
-          axis.ticks.y = element_blank())
+          axis.ticks.y = element_blank(),
+          plot.title.position = "plot")
 }
 
-murci_families_barplot <- barplot_format(murci_families) +
+murci_family_plot <- family_plot(murci_families) +
   # use the Tangara chilensis color palette
-  scale_fill_manual(values = tanagr_palette("tangara_chilensis", n = 32, discrete = FALSE)) +
+  scale_color_manual(values = tanagr_palette("tangara_chilensis", n = 32, discrete = FALSE)) +
   labs(title = "Murciélago observations by family")
 
-murci_families_barplot
+murci_family_plot
+
+sensoria_family_plot <- family_plot(sensoria_families) +
+  # use the Cyanerpes cyaneus color palette
+  scale_color_manual(values = tanagr_palette("cyanerpes_cyaneus", n = 35, discrete = FALSE)) +
+  labs(title = "Sensoria observations by family")
+
+sensoria_family_plot 
+```
+
+# 7. Rank abundance
+
+```{r}
+# function to calculate rank abundance
+rank_abundance_fxn <- function(df) {
+  df %>% 
+    # calculate proportion of observations per species
+    mutate(rel_abund = sum_ind/sum(sum_ind)) %>% 
+    # create a new column for rank
+    arrange(-rel_abund) %>% 
+    mutate(rank = seq(from = 1, to = length(sum_ind), by = 1)) %>% 
+    # create a column for labelling
+    mutate(label = case_when(
+      rank < 11 ~ "yes",
+      TRUE ~ "no"
+    ))
+}
+
+murci_rank <- rank_abundance_fxn(murci_tally) 
+
+sensoria_rank <- rank_abundance_fxn(sensoria_tally)
+
+# function to plot rank abundance
+
+rank_abundance_plot <- function(df) {
+  df %>% 
+    ggplot(aes(x = rank, y = rel_abund)) +
+    geom_line() +
+    geom_point() +
+    geom_text_repel(data = df %>% filter(rank < 10),
+                    aes(label = especie),     
+                    segment.curvature = -1e-20, point.padding = 0.2, 
+                    force_pull = 0.1, direction = "y", 
+                    nudge_x = 15, nudge_y = 0.01,
+                    size = 5, col = "red") +
+    labs(x = "Rank abundance", y = "Relative abundance") +
+    theme_classic() +
+    theme(plot.title.position = "plot")
+}
+
+rank_abundance_plot(murci_rank) +
+  labs(title = "Murciélago rank abundance")
+
+rank_abundance_plot(sensoria_rank) +
+  labs(title = "Sensoria rank abundance")
+
 ```
 
