@@ -81,11 +81,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">1. Description</a></li>
   <li><a href="#libraries-data-function" id="toc-libraries-data-function" class="nav-link" data-scroll-target="#libraries-data-function">2. Libraries, data, function</a></li>
-  <li><a href="#murcielago-data" id="toc-murcielago-data" class="nav-link" data-scroll-target="#murcielago-data">3. Murcielago data</a></li>
-  <li><a href="#sensoria-data" id="toc-sensoria-data" class="nav-link" data-scroll-target="#sensoria-data">4. Sensoria data</a></li>
+  <li><a href="#santa-rosa-data" id="toc-santa-rosa-data" class="nav-link" data-scroll-target="#santa-rosa-data">3. Santa Rosa data</a></li>
+  <li><a href="#cacao-data" id="toc-cacao-data" class="nav-link" data-scroll-target="#cacao-data">4. Cacao data</a></li>
   <li><a href="#post-processing-in-excel" id="toc-post-processing-in-excel" class="nav-link" data-scroll-target="#post-processing-in-excel">5. Post-processing in Excel</a></li>
-  <li><a href="#observations-by-family" id="toc-observations-by-family" class="nav-link" data-scroll-target="#observations-by-family">6. Observations by family</a></li>
-  <li><a href="#rank-abundance" id="toc-rank-abundance" class="nav-link" data-scroll-target="#rank-abundance">7. Rank abundance</a></li>
+  <li><a href="#visualizations" id="toc-visualizations" class="nav-link" data-scroll-target="#visualizations">6. Visualizations</a>
+  <ul class="collapse">
+  <li><a href="#a.-site-comparisons" id="toc-a.-site-comparisons" class="nav-link" data-scroll-target="#a.-site-comparisons">a. Site comparisons</a>
+  <ul class="collapse">
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
+  <li><a href="#cleaning" id="toc-cleaning" class="nav-link" data-scroll-target="#cleaning">Cleaning</a></li>
+  <li><a href="#tanagers" id="toc-tanagers" class="nav-link" data-scroll-target="#tanagers">Tanagers</a></li>
+  <li><a href="#warblers" id="toc-warblers" class="nav-link" data-scroll-target="#warblers">Warblers</a></li>
+  <li><a href="#antbirds" id="toc-antbirds" class="nav-link" data-scroll-target="#antbirds">Antbirds</a></li>
+  <li><a href="#hummingbirds" id="toc-hummingbirds" class="nav-link" data-scroll-target="#hummingbirds">Hummingbirds</a></li>
+  <li><a href="#flycatchers" id="toc-flycatchers" class="nav-link" data-scroll-target="#flycatchers">Flycatchers</a></li>
+  <li><a href="#parrots" id="toc-parrots" class="nav-link" data-scroll-target="#parrots">Parrots</a></li>
+  <li><a href="#icterids" id="toc-icterids" class="nav-link" data-scroll-target="#icterids">Icterids</a></li>
+  </ul></li>
+  <li><a href="#b.-species-rank-abundance" id="toc-b.-species-rank-abundance" class="nav-link" data-scroll-target="#b.-species-rank-abundance">b. Species rank abundance</a>
+  <ul class="collapse">
+  <li><a href="#functions-1" id="toc-functions-1" class="nav-link" data-scroll-target="#functions-1">Functions</a></li>
+  <li><a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a></li>
+  </ul></li>
+  <li><a href="#c.-observation-comparisons" id="toc-c.-observation-comparisons" class="nav-link" data-scroll-target="#c.-observation-comparisons">c.&nbsp;Observation comparisons</a>
+  <ul class="collapse">
+  <li><a href="#functions-2" id="toc-functions-2" class="nav-link" data-scroll-target="#functions-2">Functions</a></li>
+  <li><a href="#figure-code" id="toc-figure-code" class="nav-link" data-scroll-target="#figure-code">Figure code</a></li>
+  </ul></li>
+  <li><a href="#d.-observations-by-family" id="toc-d.-observations-by-family" class="nav-link" data-scroll-target="#d.-observations-by-family">d.&nbsp;Observations by family</a>
+  <ul class="collapse">
+  <li><a href="#functions-3" id="toc-functions-3" class="nav-link" data-scroll-target="#functions-3">Functions</a></li>
+  <li><a href="#figures-1" id="toc-figures-1" class="nav-link" data-scroll-target="#figures-1">Figures</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -115,17 +143,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="libraries-data-function" class="level1">
 <h1>2. Libraries, data, function</h1>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># general manipulation</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) <span class="co"># organizing directories</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor) <span class="co"># cleaning column names</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) <span class="co"># using the xlsx file</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tanagR) <span class="co"># color palettes inspired by members of the Thraupidae family</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel) <span class="co"># labelling plots</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork) <span class="co"># putting plots together</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>These are the data files that are useful to have.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># taxon info from NACC to organize final tallies by family</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>taxon_nacc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"species-lists"</span>, <span class="st">"NACC_list_species_2022-01-29.csv"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>taxon_nacc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"species-lists"</span>, <span class="st">"NACC_list_species_2022-01-29.csv"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># changing common names for 2023</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">common_name =</span> <span class="fu">case_when</span>(</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    common_name <span class="sc">==</span> <span class="st">"Yellow-olive Flycatcher"</span> <span class="sc">~</span> <span class="st">"Yellow-olive Flatbill"</span>,</span>
@@ -134,28 +168,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    common_name <span class="sc">==</span> <span class="st">"Grayish Saltator"</span> <span class="sc">~</span> <span class="st">"Cinnamon-bellied Saltator"</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> common_name </span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># caracara split: using Caracara plancus</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">!=</span> <span class="st">"Caracara cheriway"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>family_levels <span class="ot">&lt;-</span> taxon_nacc <span class="sc">%&gt;%</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family) <span class="sc">%&gt;%</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">fct_inorder</span>(family)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(family)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># data from Murcielago</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>murci <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"data-entry"</span>, <span class="st">"CRSR_CBC_2023_Murcielago_data_entry.xlsx"</span>), <span class="at">sheet =</span> <span class="st">"datos"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># attach taxonomic info</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>))</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># data from Sensoria-Buenos Aires route</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>sensoria <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"data-entry"</span>, <span class="st">"CRCA_CBC_2023_Sensoria_data_entry.xlsx"</span>), <span class="at">sheet =</span> <span class="st">"datos"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># taking out old species names that are duplicates in the data frame</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span> species <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Caracara cheriway"</span>, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Euphonia elegantissima"</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Phalacrocorax brasilianus"</span>))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># making a vector of families in taxonomic order</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>family_levels <span class="ot">&lt;-</span> taxon_nacc <span class="sc">%&gt;%</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family) <span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">fct_inorder</span>(family)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(family)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># data from Murcielago</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>murci <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"data-entry"</span>, <span class="st">"CRSR_CBC_2023_Murcielago_data_entry.xlsx"</span>), <span class="at">sheet =</span> <span class="st">"datos"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># attach taxonomic info</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># data from Sensoria-Buenos Aires route</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>cacao <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"data-entry"</span>, <span class="st">"CRCA_CBC_2023_Sensoria_data_entry.xlsx"</span>), <span class="at">sheet =</span> <span class="st">"datos"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Santa Rosa species list</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>murci_spp <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"species-lists"</span>, <span class="st">"Santa_Rosa_lista_aves_actualizada_2023.xlsx"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nombre_en_ingles) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sitio =</span> <span class="st">"murci"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># cacao species list</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>cacao_spp <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"species-lists"</span>, <span class="st">"Cacao_lista_aves_actualizada_2023.xlsx"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nombre_en_ingles) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sitio =</span> <span class="st">"cacao"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>This is the function to summarize individual counts by species and sort species by family. This depends on the species column being named “especie” and the individual count column being named “numero”.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>count_function <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find columns in data frame called "especie" and "numero"</span></span>
@@ -165,179 +219,476 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if columns from data frame are actually "especie" and "numero", do the summary</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">identical</span>(test, <span class="fu">c</span>(<span class="st">"especie"</span>, <span class="st">"numero"</span>))) {</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(especie) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarize</span>(<span class="at">sum_ind =</span> <span class="fu">sum</span>(numero)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="co"># attach taxonomic info</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(<span class="fu">factor</span>(family, <span class="at">levels =</span> family_levels)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(especie, sum_ind)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># else throw an error</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">"Whoops! You might be missing columns 'especie' and 'numero'. Double check your data frame!"</span>)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="co"># initial grouping by species to calculate total number of individuals</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(especie) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarize</span>(<span class="at">sum_ind =</span> <span class="fu">sum</span>(numero)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># attach taxonomic info</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="co"># arranging observations in taxonomic order by family</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(<span class="fu">factor</span>(family, <span class="at">levels =</span> family_levels)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="co"># selecting only species and sum of individuals</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(especie, sum_ind)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># else throw an error</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">"Whoops! You might be missing columns 'especie' and 'numero'. Double check your data frame!"</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
-<section id="murcielago-data" class="level1">
-<h1>3. Murcielago data</h1>
+<section id="santa-rosa-data" class="level1">
+<h1>3. Santa Rosa data</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>murci_spp <span class="ot">&lt;-</span> <span class="fu">unique</span>(murci<span class="sc">$</span>especie) <span class="sc">%&gt;%</span> </span>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>murci_count <span class="ot">&lt;-</span> <span class="fu">unique</span>(murci<span class="sc">$</span>especie) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>murci_tally <span class="ot">&lt;-</span> <span class="fu">count_function</span>(murci)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(murci_tally)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 2
-  especie           sum_ind
-  &lt;chr&gt;               &lt;dbl&gt;
-1 Crested Guan            2
-2 Great Curassow          4
-3 Inca Dove               8
-4 Red-billed Pigeon       5
-5 White-tipped Dove       7
-6 White-winged Dove      14</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write_csv(murci_tally, here::here("tallies", "murci-2023.csv"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># write_csv(murci_tally, here::here("tallies", "murci-2023.csv"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
-<section id="sensoria-data" class="level1">
-<h1>4. Sensoria data</h1>
+<section id="cacao-data" class="level1">
+<h1>4. Cacao data</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sensoria_spp <span class="ot">&lt;-</span> <span class="fu">unique</span>(sensoria<span class="sc">$</span>especie) <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>()</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 105 species</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sensoria_tally <span class="ot">&lt;-</span> <span class="fu">count_function</span>(sensoria)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sensoria_tally)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 2
-  especie           sum_ind
-  &lt;chr&gt;               &lt;dbl&gt;
-1 Inca Dove               2
-2 Ruddy Ground Dove      10
-3 White-tipped Dove       2
-4 White-winged Dove       7
-5 Groove-billed Ani      12
-6 Squirrel Cuckoo         2</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write_csv(sensoria_tally, here::here("tallies", "sensoria-2023.csv"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cacao_count <span class="ot">&lt;-</span> <span class="fu">unique</span>(cacao<span class="sc">$</span>especie) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 105 species</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>cacao_tally <span class="ot">&lt;-</span> <span class="fu">count_function</span>(cacao)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># write_csv(cacao_tally, here::here("tallies", "sensoria-2023.csv"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="post-processing-in-excel" class="level1">
 <h1>5. Post-processing in Excel</h1>
 <p>The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used <code>VLOOKUP</code> to automatically fill in counts in the main sheet count column. The general formula for this is <code>=VLOOKUP([cell with common name], [cells with table], 2, FALSE)</code>. One example is from the Murcielago total: <code>=VLOOKUP(C185, 'murci-2023'!A$2:B$63, 2, FALSE)</code>.</p>
 </section>
-<section id="observations-by-family" class="level1">
-<h1>6. Observations by family</h1>
+<section id="visualizations" class="level1">
+<h1>6. Visualizations</h1>
+<section id="a.-site-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="a.-site-comparisons">a. Site comparisons</h2>
+<section id="functions" class="level3">
+<h3 class="anchored" data-anchor-id="functions">Functions</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>family_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># summarizing observations by family</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">sum_obs =</span> <span class="fu">sum</span>(numero)) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># set the factor levels to be in descending order by sum_obs</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(sum_obs) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">fct_inorder</span>(family))</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>murci_families <span class="ot">&lt;-</span> <span class="fu">family_summary</span>(murci)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>sensoria_families <span class="ot">&lt;-</span> <span class="fu">family_summary</span>(sensoria)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>family_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> sum_obs, <span class="at">y =</span> family)) <span class="sc">+</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> sum_obs, <span class="at">yend =</span> family, <span class="at">color =</span> family), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> family), <span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> sum_obs), <span class="at">nudge_x =</span> <span class="fu">max</span>(df<span class="sc">$</span>sum_obs<span class="sc">*</span><span class="fl">0.03</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(df<span class="sc">$</span>sum_obs<span class="sc">*</span><span class="fl">1.05</span>))) <span class="sc">+</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total individuals observed"</span>, <span class="at">y =</span> <span class="st">"Family"</span>) <span class="sc">+</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title.position =</span> <span class="st">"plot"</span>)</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>murci_family_plot <span class="ot">&lt;-</span> <span class="fu">family_plot</span>(murci_families) <span class="sc">+</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use the Tangara chilensis color palette</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">tanagr_palette</span>(<span class="st">"tangara_chilensis"</span>, <span class="at">n =</span> <span class="dv">32</span>, <span class="at">discrete =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Murciélago observations by family"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.</code></pre>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>site_combination_function <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># determine the combinations based on occurence in Santa Rosa or Cacao</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">combo =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      sitio.x <span class="sc">==</span> <span class="st">"murci"</span> <span class="sc">&amp;</span> sitio.y <span class="sc">==</span> <span class="st">"cacao"</span> <span class="sc">~</span> <span class="st">"murci-cacao"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      sitio.x <span class="sc">==</span> <span class="st">"murci"</span> <span class="sc">~</span> <span class="st">"murci"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      sitio.y <span class="sc">==</span> <span class="st">"cacao"</span> <span class="sc">~</span> <span class="st">"cacao"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">combo =</span> <span class="fu">fct_relevel</span>(combo, <span class="st">"murci"</span>, <span class="st">"murci-cacao"</span>, <span class="st">"cacao"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(combo) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select columns of interest</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(especie, sitio.x, sitio.y, combo) <span class="sc">%&gt;%</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># make this longer by making a new column called site for murci or cacao</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> sitio.x<span class="sc">:</span>sitio.y, <span class="at">names_to =</span> <span class="st">"sitio"</span>, <span class="at">values_to =</span> <span class="st">"site"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># take out extraneous column</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>sitio) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># join with taxonomic ino</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># general reordering of factors</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(especie, combo, site, family) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">factor</span>(family, family_levels)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(combo, family) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">especie =</span> <span class="fu">fct_inorder</span>(especie)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">site =</span> <span class="fu">fct_relevel</span>(site, <span class="st">"murci"</span>, <span class="st">"cacao"</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>site_combination_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df, family) {</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>(site) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(family <span class="sc">==</span> {{ family }})</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> site, <span class="at">y =</span> especie)) <span class="sc">+</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> combo)) <span class="sc">+</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"murci"</span> <span class="ot">=</span> <span class="st">"#FF5A33"</span>, </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"murci-cacao"</span> <span class="ot">=</span> <span class="st">"#B4CF66"</span>, </span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"cacao"</span> <span class="ot">=</span> <span class="st">"#146152"</span>)) <span class="sc">+</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(combo <span class="sc">==</span> <span class="st">"murci-cacao"</span>),</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> site, <span class="at">y =</span> especie, <span class="at">group =</span> especie),</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>              <span class="at">color =</span> <span class="st">"#B4CF66"</span>) <span class="sc">+</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">position =</span> <span class="st">"top"</span>, </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Santa Rosa"</span>, <span class="st">"Cacao"</span>)) <span class="sc">+</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> rev) <span class="sc">+</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> family) <span class="sc">+</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>          <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>murci_family_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ACG-CBC-data-processing-2023_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="960"></p>
+</section>
+<section id="cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="cleaning">Cleaning</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>site_all_spp <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">full_join</span>(murci_spp, cacao_spp, <span class="at">by =</span> <span class="st">"nombre_en_ingles"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">especie =</span> nombre_en_ingles) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">site_combination_function</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sensoria_family_plot <span class="ot">&lt;-</span> <span class="fu">family_plot</span>(sensoria_families) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use the Cyanerpes cyaneus color palette</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">tanagr_palette</span>(<span class="st">"cyanerpes_cyaneus"</span>, <span class="at">n =</span> <span class="dv">35</span>, <span class="at">discrete =</span> <span class="cn">FALSE</span>)) <span class="sc">+</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Sensoria observations by family"</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>sensoria_family_plot </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="tanagers" class="level3">
+<h3 class="anchored" data-anchor-id="tanagers">Tanagers</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Thraupidae"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<p><img src="ACG-CBC-data-processing-2023_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="960"></p>
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-tanagers-1.png" class="img-fluid" width="384"></p>
 </div>
 </div>
 </section>
-<section id="rank-abundance" class="level1">
-<h1>7. Rank abundance</h1>
+<section id="warblers" class="level3">
+<h3 class="anchored" data-anchor-id="warblers">Warblers</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># function to calculate rank abundance</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>rank_abundance_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate proportion of observations per species</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rel_abund =</span> sum_ind<span class="sc">/</span><span class="fu">sum</span>(sum_ind)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a new column for rank</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="sc">-</span>rel_abund) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="fu">length</span>(sum_ind), <span class="at">by =</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a column for labelling</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">case_when</span>(</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      rank <span class="sc">&lt;</span> <span class="dv">11</span> <span class="sc">~</span> <span class="st">"yes"</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"no"</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>murci_rank <span class="ot">&lt;-</span> <span class="fu">rank_abundance_fxn</span>(murci_tally) </span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>sensoria_rank <span class="ot">&lt;-</span> <span class="fu">rank_abundance_fxn</span>(sensoria_tally)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># function to plot rank abundance</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>rank_abundance_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> rank, <span class="at">y =</span> rel_abund)) <span class="sc">+</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text_repel</span>(<span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(rank <span class="sc">&lt;</span> <span class="dv">10</span>),</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">label =</span> especie),     </span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>                    <span class="at">segment.curvature =</span> <span class="sc">-</span><span class="fl">1e-20</span>, <span class="at">point.padding =</span> <span class="fl">0.2</span>, </span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                    <span class="at">force_pull =</span> <span class="fl">0.1</span>, <span class="at">direction =</span> <span class="st">"y"</span>, </span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nudge_x =</span> <span class="dv">15</span>, <span class="at">nudge_y =</span> <span class="fl">0.01</span>,</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Rank abundance"</span>, <span class="at">y =</span> <span class="st">"Relative abundance"</span>) <span class="sc">+</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title.position =</span> <span class="st">"plot"</span>)</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_abundance_plot</span>(murci_rank) <span class="sc">+</span></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Murciélago rank abundance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Parulidae"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<p><img src="ACG-CBC-data-processing-2023_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-warblers-1.png" class="img-fluid" width="384"></p>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_abundance_plot</span>(sensoria_rank) <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Sensoria rank abundance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="antbirds" class="level3">
+<h3 class="anchored" data-anchor-id="antbirds">Antbirds</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Thamnophilidae"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<p><img src="ACG-CBC-data-processing-2023_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-antbirds-1.png" class="img-fluid" width="384"></p>
 </div>
 </div>
+</section>
+<section id="hummingbirds" class="level3">
+<h3 class="anchored" data-anchor-id="hummingbirds">Hummingbirds</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Trochilidae"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-hummingbirds-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</section>
+<section id="flycatchers" class="level3">
+<h3 class="anchored" data-anchor-id="flycatchers">Flycatchers</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Tyrannidae"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-flycatchers-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</section>
+<section id="parrots" class="level3">
+<h3 class="anchored" data-anchor-id="parrots">Parrots</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Psittacidae"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-parrots-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</section>
+<section id="icterids" class="level3">
+<h3 class="anchored" data-anchor-id="icterids">Icterids</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site_combination_plot</span>(site_all_spp, <span class="st">"Icteridae"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/site-combo-icterids-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="b.-species-rank-abundance" class="level2">
+<h2 class="anchored" data-anchor-id="b.-species-rank-abundance">b. Species rank abundance</h2>
+<p>We saw 62 species during the Santa Rosa count, and 105 species during the Cacao count.</p>
+<section id="functions-1" class="level3">
+<h3 class="anchored" data-anchor-id="functions-1">Functions</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># function to calculate rank abundance</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>rank_abundance_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate proportion of observations per species</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rel_abund =</span> sum_ind<span class="sc">/</span><span class="fu">sum</span>(sum_ind)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a new column for rank</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="sc">-</span>rel_abund) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="fu">length</span>(sum_ind), <span class="at">by =</span> <span class="dv">1</span>)) </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># function to plot rank abundance</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>rank_abundance_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> rank, <span class="at">y =</span> rel_abund)) <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"#146152"</span>) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"#146152"</span>) <span class="sc">+</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Rank"</span>, <span class="at">y =</span> <span class="st">"Relative abundance"</span>) <span class="sc">+</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title.position =</span> <span class="st">"plot"</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="figures" class="level3">
+<h3 class="anchored" data-anchor-id="figures">Figures</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>murci_rank <span class="ot">&lt;-</span> <span class="fu">rank_abundance_fxn</span>(murci_tally) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a column for labelling</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      rank <span class="sc">&lt;</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"yes"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"no"</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>cacao_rank <span class="ot">&lt;-</span> <span class="fu">rank_abundance_fxn</span>(cacao_tally) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create a column for labelling</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      rank <span class="sc">&lt;</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"yes"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"no"</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>murci_rank_plot <span class="ot">&lt;-</span> <span class="fu">rank_abundance_plot</span>(murci_rank) <span class="sc">+</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_text_repel</span>(<span class="at">data =</span> murci_rank <span class="sc">%&gt;%</span> <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"yes"</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">label =</span> especie),     </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">force_pull =</span> <span class="fl">0.1</span>, <span class="at">direction =</span> <span class="st">"y"</span>, </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nudge_x =</span> <span class="dv">17</span>, <span class="at">nudge_y =</span> <span class="fl">0.015</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"#44803F"</span>) <span class="sc">+</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Santa Rosa rank abundance"</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>murci_rank_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/rank-abundance-1.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cacao_rank_plot <span class="ot">&lt;-</span> <span class="fu">rank_abundance_plot</span>(cacao_rank) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_text_repel</span>(<span class="at">data =</span> cacao_rank <span class="sc">%&gt;%</span> <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"yes"</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">label =</span> especie),     </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">force_pull =</span> <span class="fl">0.1</span>, <span class="at">direction =</span> <span class="st">"y"</span>, </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nudge_x =</span> <span class="dv">30</span>, <span class="at">nudge_y =</span> <span class="fl">0.01</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"#44803F"</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cacao rank abundance"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>cacao_rank_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/rank-abundance-2.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="c.-observation-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="c.-observation-comparisons">c.&nbsp;Observation comparisons</h2>
+<section id="functions-2" class="level3">
+<h3 class="anchored" data-anchor-id="functions-2">Functions</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># function to calculate the number of single observations per family</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>obs_function <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tally</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(n) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">fct_inorder</span>(family)) </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># function to visualize number of observations per family</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>family_obs_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> family)) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> n, <span class="at">yend =</span> family, <span class="at">color =</span> family), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> family), <span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> n), <span class="at">nudge_x =</span> <span class="fu">max</span>(df<span class="sc">$</span>n<span class="sc">*</span><span class="fl">0.03</span>), <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(df<span class="sc">$</span>n<span class="sc">*</span><span class="fl">1.05</span>)),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>                       <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total observations"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">17</span>),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">19</span>),</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>),</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.margin =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>), <span class="at">units =</span> <span class="st">"cm"</span>))</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="figure-code" class="level3">
+<h3 class="anchored" data-anchor-id="figure-code">Figure code</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>murci_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(murci) </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cacao_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(cacao)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>murci_colors <span class="ot">&lt;-</span> murci_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">11</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">18</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">26</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">36</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>cacao_colors <span class="ot">&lt;-</span> cacao_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">7</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">12</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">17</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">20</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">25</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>murci_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(murci_obs) <span class="sc">+</span></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> murci_colors) <span class="sc">+</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Santa Rosa"</span>)</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>cacao_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(cacao_obs) <span class="sc">+</span></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cacao_colors) <span class="sc">+</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cacao"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="d.-observations-by-family" class="level2">
+<h2 class="anchored" data-anchor-id="d.-observations-by-family">d.&nbsp;Observations by family</h2>
+<section id="functions-3" class="level3">
+<h3 class="anchored" data-anchor-id="functions-3">Functions</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>family_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># summarizing observations by family</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">sum_obs =</span> <span class="fu">sum</span>(numero)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># set the factor levels to be in descending order by sum_obs</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(sum_obs) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">family =</span> <span class="fu">fct_inorder</span>(family)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># for visualization: binning things based on number of observations per family</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sum_obs_group =</span> <span class="fu">as_factor</span>(sum_obs)) </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>family_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> sum_obs, <span class="at">y =</span> family)) <span class="sc">+</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> sum_obs, <span class="at">yend =</span> family, <span class="at">color =</span> family), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> family), <span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> sum_obs), <span class="at">nudge_x =</span> <span class="fu">max</span>(df<span class="sc">$</span>sum_obs<span class="sc">*</span><span class="fl">0.03</span>), <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(df<span class="sc">$</span>sum_obs<span class="sc">*</span><span class="fl">1.05</span>)),</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>                       <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total individuals"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">17</span>),</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">19</span>),</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>),</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>          <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>          <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.margin =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>), <span class="at">units =</span> <span class="st">"cm"</span>))</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="figures-1" class="level3">
+<h3 class="anchored" data-anchor-id="figures-1">Figures</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>murci_families <span class="ot">&lt;-</span> <span class="fu">family_summary</span>(murci)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>cacao_families <span class="ot">&lt;-</span> <span class="fu">family_summary</span>(cacao)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>murci_family_plot <span class="ot">&lt;-</span> <span class="fu">family_plot</span>(murci_families) <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> murci_colors) <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">" "</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>cacao_family_plot <span class="ot">&lt;-</span> <span class="fu">family_plot</span>(cacao_families) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cacao_colors) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>murci_family_obs_plot <span class="sc">+</span> murci_family_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/all-figures-together-1.png" class="img-fluid" width="1728"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cacao_family_obs_plot <span class="sc">+</span> cacao_family_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="ACG-CBC-data-processing-2023_files/figure-html/all-figures-together-2.png" class="img-fluid" width="1728"></p>
+</div>
+</div>
+</section>
+</section>
 </section>
 
 </main>
