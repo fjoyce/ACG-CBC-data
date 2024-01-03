@@ -274,6 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>6. Visualizations</h1>
 <section id="a.-site-comparisons" class="level2">
 <h2 class="anchored" data-anchor-id="a.-site-comparisons">a. Site comparisons</h2>
+<p>These are comparisons between Santa Rosa and Cacao species lists, and could be useful to answer the question: which species (in a particular family) would I expect to see in one count over another (or both)?</p>
 <section id="functions" class="level3">
 <h3 class="anchored" data-anchor-id="functions">Functions</h3>
 <div class="cell">
@@ -295,7 +296,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> sitio.x<span class="sc">:</span>sitio.y, <span class="at">names_to =</span> <span class="st">"sitio"</span>, <span class="at">values_to =</span> <span class="st">"site"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># take out extraneous column</span></span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>sitio) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># join with taxonomic ino</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># join with taxonomic info</span></span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(., taxon_nacc, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"especie"</span> <span class="ot">=</span> <span class="st">"common_name"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># general reordering of factors</span></span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(especie, combo, site, family) <span class="sc">%&gt;%</span> </span>
@@ -557,53 +558,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>murci_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(murci) </span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tallying observations</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cacao_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(cacao)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>murci_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(murci) </span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>murci_colors <span class="ot">&lt;-</span> murci_obs <span class="sc">%&gt;%</span> </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">11</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">18</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">26</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">36</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>cacao_colors <span class="ot">&lt;-</span> cacao_obs <span class="sc">%&gt;%</span> </span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">7</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">12</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">17</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">20</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">25</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>murci_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(murci_obs) <span class="sc">+</span></span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> murci_colors) <span class="sc">+</span></span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Santa Rosa"</span>)</span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>cacao_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(cacao_obs) <span class="sc">+</span></span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cacao_colors) <span class="sc">+</span></span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cacao"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>cacao_obs <span class="ot">&lt;-</span> <span class="fu">obs_function</span>(cacao)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># manually coding in colors</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># this is based on the number of observations per family, and the two counts have different families</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"># this has to be done manually, because presumably the family composition and number of observations per family changes every year</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this is also done separately for the Santa Rosa and Cacao counts because they have different family compositions</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># these are using the Cyanerpes cyaneus palette from the tanagR package</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>murci_colors <span class="ot">&lt;-</span> murci_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">11</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">18</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">26</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">36</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>cacao_colors <span class="ot">&lt;-</span> cacao_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"#ADFDFE"</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"#BDCAD6"</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"#CE98AE"</span>,</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"#DE6687"</span>,</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">7</span> <span class="sc">~</span> <span class="st">"#DB4577"</span>,</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">8</span> <span class="sc">~</span> <span class="st">"#AE4596"</span>,</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">9</span> <span class="sc">~</span> <span class="st">"#8146B5"</span>,</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">12</span> <span class="sc">~</span> <span class="st">"#5446D4"</span>,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">17</span> <span class="sc">~</span> <span class="st">"#393CBB"</span>,</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">20</span> <span class="sc">~</span> <span class="st">"#262D87"</span>,</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">25</span> <span class="sc">~</span> <span class="st">"#131D52"</span>,</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>      n <span class="sc">==</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"#010E1E"</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(family, color) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>murci_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(murci_obs) <span class="sc">+</span></span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> murci_colors) <span class="sc">+</span></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Santa Rosa"</span>)</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>cacao_family_obs_plot <span class="ot">&lt;-</span> <span class="fu">family_obs_plot</span>(cacao_obs) <span class="sc">+</span></span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cacao_colors) <span class="sc">+</span></span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cacao"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>

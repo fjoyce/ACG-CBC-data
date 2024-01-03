@@ -134,6 +134,8 @@ The spreadsheet to report route data to compilers has a column to enter count nu
 
 ## a. Site comparisons
 
+These are comparisons between Santa Rosa and Cacao species lists, and could be useful to answer the question: which species (in a particular family) would I expect to see in one count over another (or both)?
+
 ### Functions
 
 ```{r site-comparison-functions}
@@ -153,7 +155,7 @@ site_combination_function <- function(df) {
     pivot_longer(cols = sitio.x:sitio.y, names_to = "sitio", values_to = "site") %>% 
     # take out extraneous column
     select(!sitio) %>% 
-    # join with taxonomic ino
+    # join with taxonomic info
     left_join(., taxon_nacc, by = c("especie" = "common_name")) %>% 
     # general reordering of factors
     select(especie, combo, site, family) %>% 
@@ -369,10 +371,17 @@ family_obs_plot <- function(df) {
 ### Figure code
 
 ```{r observation-comparisons}
+# tallying observations
+
 murci_obs <- obs_function(murci) 
 
 cacao_obs <- obs_function(cacao)
 
+# manually coding in colors
+# this is based on the number of observations per family, and the two counts have different families
+# this has to be done manually, because presumably the family composition and number of observations per family changes every year
+# this is also done separately for the Santa Rosa and Cacao counts because they have different family compositions
+# these are using the Cyanerpes cyaneus palette from the tanagR package
 murci_colors <- murci_obs %>% 
     mutate(color = case_when(
       n == 1 ~ "#ADFDFE",
