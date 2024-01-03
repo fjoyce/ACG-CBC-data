@@ -3,6 +3,9 @@ title: "2023 CBC data processing"
 format: html
 editor: source
 toc: true
+code-fold: true
+execute:
+  freeze: auto
 ---
 
 # 1. Description
@@ -11,20 +14,21 @@ This is copied from the 2022 pipeline.
 
 # 2. Libraries, data, function
 
-```{r warning = FALSE, message = FALSE}
+```{r libraries, warning = FALSE, message = FALSE}
 library(tidyverse) # general manipulation
 library(here) # organizing directories
 library(janitor) # cleaning column names
 library(readxl) # using the xlsx file
 library(tanagR) # color palettes inspired by members of the Thraupidae family
-library(ggrepel)
+library(ggrepel) # labelling plots
+library(patchwork) # putting plots together
 ```
 
 These are the data files that are useful to have.
 
-```{r warning = FALSE, message = FALSE}
+```{r data-files, warning = FALSE, message = FALSE}
 # taxon info from NACC to organize final tallies by family
-taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_2022-01-29.csv")) %>% 
+taxon_nacc <- read_csv(here("data", "species-lists", "NACC_list_species_2022-01-29.csv")) %>% 
   # changing common names for 2023
   mutate(common_name = case_when(
     common_name == "Yellow-olive Flycatcher" ~ "Yellow-olive Flatbill",
@@ -33,9 +37,12 @@ taxon_nacc <- read_csv(here::here("data", "species-lists", "NACC_list_species_20
     common_name == "Grayish Saltator" ~ "Cinnamon-bellied Saltator",
     TRUE ~ common_name 
   )) %>% 
-  # caracara split: using Caracara plancus
-  filter(species != "Caracara cheriway")
+  # taking out old species names that are duplicates in the data frame
+  filter(! species %in% c("Caracara cheriway", 
+                          "Euphonia elegantissima", 
+                          "Phalacrocorax brasilianus"))
 
+# making a vector of families in taxonomic order
 family_levels <- taxon_nacc %>%
   select(family) %>%
   unique() %>%
@@ -43,20 +50,34 @@ family_levels <- taxon_nacc %>%
   pull(family)
 
 # data from Murcielago
-murci <- read_xlsx(here::here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
+murci <- read_xlsx(here("data", "data-entry", "CRSR_CBC_2023_Murcielago_data_entry.xlsx"), sheet = "datos") %>% 
   clean_names() %>% 
   # attach taxonomic info
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
 
 # data from Sensoria-Buenos Aires route
-sensoria <- read_xlsx(here::here("data", "data-entry", "CRCA_CBC_2023_Sensoria_data_entry.xlsx"), sheet = "datos") %>%
+cacao <- read_xlsx(here("data", "data-entry", "CRCA_CBC_2023_Sensoria_data_entry.xlsx"), sheet = "datos") %>%
   clean_names() %>%
   left_join(., taxon_nacc, by = c("especie" = "common_name"))
+
+# Santa Rosa species list
+murci_spp <- read_xlsx(here("data", "species-lists", "Santa_Rosa_lista_aves_actualizada_2023.xlsx")) %>% 
+  clean_names() %>% 
+  select(nombre_en_ingles) %>% 
+  drop_na() %>% 
+  mutate(sitio = "murci")
+
+# cacao species list
+cacao_spp <- read_xlsx(here("data", "species-lists", "Cacao_lista_aves_actualizada_2023.xlsx")) %>% 
+  clean_names() %>% 
+  select(nombre_en_ingles) %>% 
+  drop_na() %>% 
+  mutate(sitio = "cacao")
 ```
 
 This is the function to summarize individual counts by species and sort species by family. This depends on the species column being named "especie" and the individual count column being named "numero".
 
-```{r warning = FALSE}
+```{r tallying-function, warning = FALSE}
 count_function <- function(df) {
   
   # find columns in data frame called "especie" and "numero"
@@ -66,12 +87,15 @@ count_function <- function(df) {
   # if columns from data frame are actually "especie" and "numero", do the summary
   if(identical(test, c("especie", "numero"))) {
     df %>% 
+      # initial grouping by species to calculate total number of individuals
       group_by(especie) %>% 
       summarize(sum_ind = sum(numero)) %>% 
       ungroup() %>% 
       # attach taxonomic info
       left_join(., taxon_nacc, by = c("especie" = "common_name")) %>% 
+      # arranging observations in taxonomic order by family
       arrange(factor(family, levels = family_levels)) %>% 
+      # selecting only species and sum of individuals
       select(especie, sum_ind)
     # else throw an error
   } else {
@@ -80,29 +104,25 @@ count_function <- function(df) {
 }
 ```
 
-# 3. Murcielago data
-```{r warning = FALSE}
-murci_spp <- unique(murci$especie) %>% 
+# 3. Santa Rosa data
+```{r murci-tallying, warning = FALSE}
+murci_count <- unique(murci$especie) %>% 
   length()
 
 murci_tally <- count_function(murci)
 
-head(murci_tally)
-
 # write_csv(murci_tally, here::here("tallies", "murci-2023.csv"))
 ```
 
-# 4. Sensoria data
-```{r warning = FALSE}
-sensoria_spp <- unique(sensoria$especie) %>%
+# 4. Cacao data
+```{r cacao-tallying, warning = FALSE}
+cacao_count <- unique(cacao$especie) %>%
   length()
 # 105 species
 
-sensoria_tally <- count_function(sensoria)
+cacao_tally <- count_function(cacao)
 
-head(sensoria_tally)
-
-# write_csv(sensoria_tally, here::here("tallies", "sensoria-2023.csv"))
+# write_csv(cacao_tally, here::here("tallies", "sensoria-2023.csv"))
 ```
 
 # 5. Post-processing in Excel
@@ -110,12 +130,299 @@ head(sensoria_tally)
 The spreadsheet to report route data to compilers has a column to enter count numbers. I exported tally results into .csv files, then copied those into different sheets in the reporting spreadsheet. I turned that data into a table (Control + T) then used `VLOOKUP` to automatically fill in counts in the main sheet count column. The general formula for this is `=VLOOKUP([cell with common name], [cells with table], 2, FALSE)`. One example is from the Murcielago total:
 `=VLOOKUP(C185, 'murci-2023'!A$2:B$63, 2, FALSE)`.
 
-# 6. Observations by family
+# 6. Visualizations
+
+## a. Site comparisons
+
+### Functions
+
+```{r site-comparison-functions}
+site_combination_function <- function(df) {
+  df %>% 
+    # determine the combinations based on occurence in Santa Rosa or Cacao
+    mutate(combo = case_when(
+      sitio.x == "murci" & sitio.y == "cacao" ~ "murci-cacao",
+      sitio.x == "murci" ~ "murci",
+      sitio.y == "cacao" ~ "cacao"
+    ),
+    combo = fct_relevel(combo, "murci", "murci-cacao", "cacao")) %>% 
+    arrange(combo) %>% 
+    # select columns of interest
+    select(especie, sitio.x, sitio.y, combo) %>%
+    # make this longer by making a new column called site for murci or cacao
+    pivot_longer(cols = sitio.x:sitio.y, names_to = "sitio", values_to = "site") %>% 
+    # take out extraneous column
+    select(!sitio) %>% 
+    # join with taxonomic ino
+    left_join(., taxon_nacc, by = c("especie" = "common_name")) %>% 
+    # general reordering of factors
+    select(especie, combo, site, family) %>% 
+    mutate(family = factor(family, family_levels)) %>% 
+    arrange(combo, family) %>% 
+    mutate(especie = fct_inorder(especie)) %>% 
+    mutate(site = fct_relevel(site, "murci", "cacao"))
+}
+
+site_combination_plot <- function(df, family) {
+  df <- df %>% 
+    drop_na(site) %>% 
+    filter(family == {{ family }})
+  
+  ggplot(data = df, aes(x = site, y = especie)) +
+    geom_point(aes(color = combo)) +
+    scale_color_manual(values = c("murci" = "#FF5A33", 
+                                  "murci-cacao" = "#B4CF66", 
+                                  "cacao" = "#146152")) +
+    geom_line(data = df %>% filter(combo == "murci-cacao"),
+              aes(x = site, y = especie, group = especie),
+              color = "#B4CF66") +
+    scale_x_discrete(position = "top", 
+                     labels = c("Santa Rosa", "Cacao")) +
+    scale_y_discrete(limits = rev) +
+    labs(title = family) +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          panel.border = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_blank(),
+          plot.title.position = "plot",
+          axis.text = element_text(size = 10),
+          legend.position = "none")
+}
+```
+
+### Cleaning
+
+```{r all-species-cleaning}
+site_all_spp <- dplyr::full_join(murci_spp, cacao_spp, by = "nombre_en_ingles") %>% 
+  rename(especie = nombre_en_ingles) %>% 
+  site_combination_function()
+```
+
+### Tanagers
+
+```{r site-combo-tanagers}
+#| fig-width: 4
+#| fig-height: 6
+
+site_combination_plot(site_all_spp, "Thraupidae")
+```
+
+### Warblers
+
+```{r site-combo-warblers}
+#| fig-width: 4
+#| fig-height: 7
+
+site_combination_plot(site_all_spp, "Parulidae") 
+```
+
+### Antbirds
+```{r site-combo-antbirds}
+#| fig-width: 4
+#| fig-height: 5
+
+site_combination_plot(site_all_spp, "Thamnophilidae")
+```
+
+### Hummingbirds
+```{r site-combo-hummingbirds}
+#| fig-width: 4
+#| fig-height: 6
+
+site_combination_plot(site_all_spp, "Trochilidae") 
+```
+
+### Flycatchers
+```{r site-combo-flycatchers}
+#| fig-width: 4
+#| fig-height: 9
+
+site_combination_plot(site_all_spp, "Tyrannidae")
+```
+
+### Parrots
+```{r site-combo-parrots}
+#| fig-width: 4
+#| fig-height: 4
+
+site_combination_plot(site_all_spp, "Psittacidae") 
+```
+
+### Icterids
+```{r site-combo-icterids}
+#| fig-width: 4
+#| fig-height: 6
+
+site_combination_plot(site_all_spp, "Icteridae") 
+```
+
+
+## b. Species rank abundance
+
+We saw `r murci_count` species during the Santa Rosa count, and `r cacao_count` species during the Cacao count. 
+
+### Functions
+
+```{r rank-abundance-function}
+# function to calculate rank abundance
+rank_abundance_fxn <- function(df) {
+  df %>% 
+    # calculate proportion of observations per species
+    mutate(rel_abund = sum_ind/sum(sum_ind)) %>% 
+    # create a new column for rank
+    arrange(-rel_abund) %>% 
+    mutate(rank = seq(from = 1, to = length(sum_ind), by = 1)) 
+}
+
+# function to plot rank abundance
+rank_abundance_plot <- function(df) {
+  df %>% 
+    ggplot(aes(x = rank, y = rel_abund)) +
+    geom_line(color = "#146152") +
+    geom_point(color = "#146152") +
+    labs(x = "Rank", y = "Relative abundance") +
+    theme_classic() +
+    theme(plot.title.position = "plot")
+}
+```
+
+### Figures
+
+```{r rank-abundance}
+#| fig-height: 6
+#| fig-width: 8
+
+murci_rank <- rank_abundance_fxn(murci_tally) %>% 
+    # create a column for labelling
+    mutate(label = case_when(
+      rank < 9 ~ "yes",
+      TRUE ~ "no"
+    ))
+
+cacao_rank <- rank_abundance_fxn(cacao_tally) %>% 
+    # create a column for labelling
+    mutate(label = case_when(
+      rank < 9 ~ "yes",
+      TRUE ~ "no"
+    ))
+
+murci_rank_plot <- rank_abundance_plot(murci_rank) +
+      geom_text_repel(data = murci_rank %>% filter(label == "yes"),
+                    aes(label = especie),     
+                    force_pull = 0.1, direction = "y", 
+                    nudge_x = 17, nudge_y = 0.015,
+                    size = 4, col = "#44803F") +
+  labs(title = "Santa Rosa rank abundance")
+
+murci_rank_plot
+
+cacao_rank_plot <- rank_abundance_plot(cacao_rank) +
+      geom_text_repel(data = cacao_rank %>% filter(label == "yes"),
+                    aes(label = especie),     
+                    force_pull = 0.1, direction = "y", 
+                    nudge_x = 30, nudge_y = 0.01,
+                    size = 4, col = "#44803F") +
+  labs(title = "Cacao rank abundance")
+
+cacao_rank_plot
+```
+
+## c. Observation comparisons
+
+### Functions
 
 ```{r}
-#| fig-height: 8
-#| fig-width: 10
+# function to calculate the number of single observations per family
+obs_function <- function(df) {
+  df %>% 
+    group_by(family) %>% 
+    tally() %>% 
+    arrange(n) %>% 
+    mutate(family = fct_inorder(family)) 
+}
 
+# function to visualize number of observations per family
+family_obs_plot <- function(df) {
+    ggplot(data = df, aes(x = n, y = family)) +
+    geom_segment(aes(x = 0, xend = n, yend = family, color = family), linewidth = 1) +
+    geom_point(aes(color = family), size = 2.5) +
+    geom_text(aes(label = n), nudge_x = max(df$n*0.03), size = 4.5) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, max(df$n*1.05)),
+                       position = "top") +
+    labs(x = "Total observations", y = "") +
+    theme_bw() +
+    theme(legend.position = "none",
+          axis.title = element_text(size = 17),
+          title = element_text(size = 19),
+          axis.ticks = element_blank(),
+          axis.text = element_text(size = 15),
+          axis.text.x = element_blank(),
+          axis.title.x = element_text(hjust = 0),
+          plot.title.position = "plot",
+          panel.border = element_blank(),
+          panel.grid = element_blank(),
+          plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), units = "cm"))
+}
+```
+
+### Figure code
+
+```{r observation-comparisons}
+murci_obs <- obs_function(murci) 
+
+cacao_obs <- obs_function(cacao)
+
+murci_colors <- murci_obs %>% 
+    mutate(color = case_when(
+      n == 1 ~ "#ADFDFE",
+      n == 2 ~ "#BDCAD6",
+      n == 3 ~ "#CE98AE",
+      n == 4 ~ "#DE6687",
+      n == 5 ~ "#DB4577",
+      n == 6 ~ "#AE4596",
+      n == 8 ~ "#8146B5",
+      n == 9 ~ "#5446D4",
+      n == 11 ~ "#393CBB",
+      n == 18 ~ "#262D87",
+      n == 26 ~ "#131D52",
+      n == 36 ~ "#010E1E"
+    )) %>% 
+  select(family, color) %>% 
+  deframe()
+
+cacao_colors <- cacao_obs %>% 
+    mutate(color = case_when(
+      n == 1 ~ "#ADFDFE",
+      n == 2 ~ "#BDCAD6",
+      n == 3 ~ "#CE98AE",
+      n == 4 ~ "#DE6687",
+      n == 7 ~ "#DB4577",
+      n == 8 ~ "#AE4596",
+      n == 9 ~ "#8146B5",
+      n == 12 ~ "#5446D4",
+      n == 17 ~ "#393CBB",
+      n == 20 ~ "#262D87",
+      n == 25 ~ "#131D52",
+      n == 30 ~ "#010E1E"
+    )) %>% 
+  select(family, color) %>% 
+  deframe()
+
+murci_family_obs_plot <- family_obs_plot(murci_obs) +
+  scale_color_manual(values = murci_colors) +
+  labs(title = "Santa Rosa")
+
+cacao_family_obs_plot <- family_obs_plot(cacao_obs) +
+  scale_color_manual(values = cacao_colors) +
+  labs(title = "Cacao")
+```
+
+## d. Observations by family
+
+### Functions
+
+```{r family-observation-functions}
 family_summary <- function(df) {
   df %>% 
     group_by(family) %>% 
@@ -125,88 +432,55 @@ family_summary <- function(df) {
     ungroup() %>% 
     # set the factor levels to be in descending order by sum_obs
     arrange(sum_obs) %>% 
-    mutate(family = fct_inorder(family))
+    mutate(family = fct_inorder(family)) %>% 
+    # for visualization: binning things based on number of observations per family
+    mutate(sum_obs_group = as_factor(sum_obs)) 
 }
-
-murci_families <- family_summary(murci)
-
-sensoria_families <- family_summary(sensoria)
 
 family_plot <- function(df) {
   ggplot(df, aes(x = sum_obs, y = family)) +
-    geom_segment(aes(x = 0, xend = sum_obs, yend = family, color = family), size = 1) +
+    geom_segment(aes(x = 0, xend = sum_obs, yend = family, color = family), linewidth = 1) +
     geom_point(aes(color = family), size = 2.5) +
-    geom_text(aes(label = sum_obs), nudge_x = max(df$sum_obs*0.03), size = 3) +
-    scale_x_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05))) +
-    labs(x = "Total individuals observed", y = "Family") +
-    theme_classic() +
+    geom_text(aes(label = sum_obs), nudge_x = max(df$sum_obs*0.03), size = 4.5) +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, max(df$sum_obs*1.05)),
+                       position = "top") +
+    labs(x = "Total individuals", y = "") +
+    theme_bw() +
     theme(legend.position = "none",
-          axis.title = element_text(size = 12),
-          title = element_text(size = 14),
-          axis.ticks.y = element_blank(),
-          plot.title.position = "plot")
+          axis.title = element_text(size = 17),
+          title = element_text(size = 19),
+          axis.ticks = element_blank(),
+          axis.text = element_text(size = 15),
+          axis.text.x = element_blank(),
+          axis.title.x = element_text(hjust = 0),
+          plot.title.position = "plot",
+          panel.border = element_blank(),
+          panel.grid = element_blank(),
+          plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), units = "cm"))
 }
-
-murci_family_plot <- family_plot(murci_families) +
-  # use the Tangara chilensis color palette
-  scale_color_manual(values = tanagr_palette("tangara_chilensis", n = 32, discrete = FALSE)) +
-  labs(title = "Murciélago observations by family")
-
-murci_family_plot
-
-sensoria_family_plot <- family_plot(sensoria_families) +
-  # use the Cyanerpes cyaneus color palette
-  scale_color_manual(values = tanagr_palette("cyanerpes_cyaneus", n = 35, discrete = FALSE)) +
-  labs(title = "Sensoria observations by family")
-
-sensoria_family_plot 
 ```
 
-# 7. Rank abundance
+### Figures
 
-```{r}
-# function to calculate rank abundance
-rank_abundance_fxn <- function(df) {
-  df %>% 
-    # calculate proportion of observations per species
-    mutate(rel_abund = sum_ind/sum(sum_ind)) %>% 
-    # create a new column for rank
-    arrange(-rel_abund) %>% 
-    mutate(rank = seq(from = 1, to = length(sum_ind), by = 1)) %>% 
-    # create a column for labelling
-    mutate(label = case_when(
-      rank < 11 ~ "yes",
-      TRUE ~ "no"
-    ))
-}
+```{r family-observations}
+murci_families <- family_summary(murci)
 
-murci_rank <- rank_abundance_fxn(murci_tally) 
+cacao_families <- family_summary(cacao)
 
-sensoria_rank <- rank_abundance_fxn(sensoria_tally)
+murci_family_plot <- family_plot(murci_families) +
+  scale_color_manual(values = murci_colors) +
+  labs(title = " ")
 
-# function to plot rank abundance
+cacao_family_plot <- family_plot(cacao_families) +
+  scale_color_manual(values = cacao_colors) +
+  labs(title = " ")
+```
 
-rank_abundance_plot <- function(df) {
-  df %>% 
-    ggplot(aes(x = rank, y = rel_abund)) +
-    geom_line() +
-    geom_point() +
-    geom_text_repel(data = df %>% filter(rank < 10),
-                    aes(label = especie),     
-                    segment.curvature = -1e-20, point.padding = 0.2, 
-                    force_pull = 0.1, direction = "y", 
-                    nudge_x = 15, nudge_y = 0.01,
-                    size = 5, col = "red") +
-    labs(x = "Rank abundance", y = "Relative abundance") +
-    theme_classic() +
-    theme(plot.title.position = "plot")
-}
+```{r all-figures-together}
+#| fig-width: 18
+#| fig-height: 10
 
-rank_abundance_plot(murci_rank) +
-  labs(title = "Murciélago rank abundance")
-
-rank_abundance_plot(sensoria_rank) +
-  labs(title = "Sensoria rank abundance")
-
+murci_family_obs_plot + murci_family_plot
+cacao_family_obs_plot + cacao_family_plot
 ```
 
