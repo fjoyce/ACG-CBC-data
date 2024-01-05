@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Sin título</name>
+	<gx:CascadingStyle kml:id="__managed_style_2B5BDDF0F82DEDDBF384">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>12</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1B3AF73A552DEDDBF384">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>8</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0E13213F272DEDDBF384">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1B3AF73A552DEDDBF384</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_2B5BDDF0F82DEDDBF384</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="05CB85AA552DEDDBBE66">
+		<name>Ruta pajareada 28 Diciembre</name>
+		<LookAt>
+			<longitude>-85.61326702092148</longitude>
+			<latitude>10.83799409352166</latitude>
+			<altitude>316.1435793652621</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1278.703428448207</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0E13213F272DEDDBF384</styleUrl>
+		<LineString>
+			<coordinates>
+				-85.61918761602966,10.83598345818671,0 -85.61795373074526,10.83551173054623,0 -85.61756745535713,10.83576786681205,0 -85.6156439780154,10.83521194320156,0 -85.61516529911498,10.83534271647336,0 -85.61494068439396,10.83714218519726,0 -85.61684370395118,10.83606919289696,0 -85.61812448508368,10.83611936364165,0 -85.61861128413423,10.83654067343687,0 -85.61765566019412,10.836625307623,0 -85.61861033225728,10.83658896957839,0 -85.61849653346508,10.83757304569412,0 -85.61794307875249,10.83793410228467,0 -85.61817332029396,10.83935535548703,0 -85.61661182714197,10.8382329950357,0 -85.616964656856,10.83801796387845,0 -85.61791800252254,10.83792212108379,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>
