@@ -151,5 +151,7 @@ observed_totals <- compiled_wide %>%
 observed_totals_entry <- observed_totals %>% 
   select(c(nombre_en_ingles,total))
 
+# saving observed_totals as RDS
 
+# saveRDS(observed_totals, file = here("data", "compiling", "2023", "CRSR", "observed_totals.RDS"))
 
