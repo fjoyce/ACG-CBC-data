@@ -8,12 +8,7 @@ library(janitor)
 
 
 
-#sensoria
-sensoria <- readxl::read_xlsx("data/compiling/2023/CRCA/sensoria/Cacao_Sensoria_total.xlsx") %>% 
-  clean_names() %>% 
-  select(c(nombre_en_ingles, total, comentarios)) %>% 
-  mutate(ruta = "sensoria") %>% 
-  filter(nombre_en_ingles != "NA")
+
 
 
 #estación cacao
@@ -28,4 +23,23 @@ estacion_cacao <- readxl::read_xlsx("data/compiling/2023/CRCA/estación_cacao/Co
   select(-scientific_name) %>% 
   mutate(total = as.numeric(total))
 
-crca_compiled_long <- bind_rows(sensoria, estacion_cacao)
+#leiva
+
+#note that there is a row at bottom with the total number of species, but readxl seems to drop it
+
+leiva <- readxl::read_xlsx("data/compiling/2023/CRCA/leiva/Cacao list-Katy & Frank-30 Dec 2023.xlsx") %>% 
+  clean_names() %>% 
+  select(c(nombre_en_ingles, total, comentarios)) %>% 
+  mutate(ruta = "leiva") %>% 
+  filter(nombre_en_ingles != "NA")
+
+
+#sensoria
+sensoria <- readxl::read_xlsx("data/compiling/2023/CRCA/sensoria/Cacao_Sensoria_total.xlsx") %>% 
+  clean_names() %>% 
+  select(c(nombre_en_ingles, total, comentarios)) %>% 
+  mutate(ruta = "sensoria") %>% 
+  filter(nombre_en_ingles != "NA")
+
+
+crca_compiled_long <- bind_rows(estacion_cacao, leiva, sensoria)
