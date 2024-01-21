@@ -7,8 +7,15 @@ library(here)
 library(janitor)
 
 
+#leiva
 
+#note that there is a row at bottom with the total number of species, but readxl seems to drop it
 
+leiva <- readxl::read_xlsx("data/compiling/2023/CRCA/leiva/Cacao list-Katy & Frank-30 Dec 2023.xlsx") %>% 
+  clean_names() %>% 
+  select(c(nombre_en_ingles, total, comentarios)) %>% 
+  mutate(ruta = "leiva") %>% 
+  filter(nombre_en_ingles != "NA")
 
 
 #estación cacao
@@ -23,14 +30,23 @@ estacion_cacao <- readxl::read_xlsx("data/compiling/2023/CRCA/estación_cacao/Co
   select(-scientific_name) %>% 
   mutate(total = as.numeric(total))
 
-#leiva
 
-#note that there is a row at bottom with the total number of species, but readxl seems to drop it
+#nueva zelandia
+nueva_zelandia <- read_csv("data/compiling/2023/CRCA/nueva_zelandia/S157901739_observations.csv") %>% 
+  rename(nombre_en_ingles = "Species") %>% 
+  rename(total = "Count") %>% 
+  rename(ruta = "Location") %>% 
+  rename(comentarios = "Details") %>% 
+  select(c(nombre_en_ingles, ruta, total, comentarios))
+  
 
-leiva <- readxl::read_xlsx("data/compiling/2023/CRCA/leiva/Cacao list-Katy & Frank-30 Dec 2023.xlsx") %>% 
+
+
+#quica
+quica <- readxl::read_xlsx("data/compiling/2023/CRCA/quica/Cacao_lista_aves_2023_Calixto_Quica.xlsx") %>% 
   clean_names() %>% 
   select(c(nombre_en_ingles, total, comentarios)) %>% 
-  mutate(ruta = "leiva") %>% 
+  mutate(ruta = "quica") %>% 
   filter(nombre_en_ingles != "NA")
 
 
@@ -42,4 +58,28 @@ sensoria <- readxl::read_xlsx("data/compiling/2023/CRCA/sensoria/Cacao_Sensoria_
   filter(nombre_en_ingles != "NA")
 
 
-crca_compiled_long <- bind_rows(estacion_cacao, leiva, sensoria)
+#combine four routes into one long data frame.
+#read in a list that used the full template 
+#so that species are ordered taxonomically instead of alphabetically in the compiled list
+#then delete duplicte rows (for:
+#black phoebe, northern schiffornis, collared trogon
+crca_compiled_long <- bind_rows(leiva, estacion_cacao, nueva_zelandia, quica, sensoria) %>% 
+  distinct()
+
+
+crca_compiled_long %>%
+  dplyr::group_by(nombre_en_ingles, ruta) %>%
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+  dplyr::filter(n > 1L) 
+
+crca_compiled_wide <- crca_compiled_long %>% 
+  pivot_wider(id_cols = nombre_en_ingles, names_from = ruta, values_from = total) %>% 
+  group_by(nombre_en_ingles) %>% 
+  mutate(total = sum(across(leiva:sensoria), na.rm = TRUE)) %>% 
+  ungroup()
+
+crca_observed_totals <- crca_compiled_wide %>% 
+  filter(total > 0) 
+
+crca_observed_totals_entry <- crca_observed_totals %>% 
+  select(c(nombre_en_ingles,total))
