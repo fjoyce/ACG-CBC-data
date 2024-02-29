@@ -155,3 +155,4 @@ observed_totals_entry <- observed_totals %>%
 
 # saveRDS(observed_totals, file = here("data", "compiling", "2023", "CRSR", "observed_totals.RDS"))
 
+write_csv(observed_totals, "SR_CBC_2023_route_lists.csv")
