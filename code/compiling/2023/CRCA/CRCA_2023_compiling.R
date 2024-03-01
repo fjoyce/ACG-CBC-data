@@ -83,3 +83,7 @@ crca_observed_totals <- crca_compiled_wide %>%
 
 crca_observed_totals_entry <- crca_observed_totals %>% 
   select(c(nombre_en_ingles,total))
+
+
+#write wide data to csv
+write_csv(crca_observed_totals, "CRCA_CBC_2023_route_lists.csv")
