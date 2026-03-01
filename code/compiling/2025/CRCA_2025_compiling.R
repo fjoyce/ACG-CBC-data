@@ -35,7 +35,6 @@ ruta_oski <- readxl::read_xlsx(path = "data/compiling/2025/CRCA/Oski_Lodge/Cacao
   filter(nombre_en_ingles != "NA") 
 
 # Pitilla ----
-
 ruta_pitilla <- readxl::read_xlsx(path = "data/compiling/2025/CRCA/Pitilla/Formulario_conteo_aves_Pitilla_2025.xlsx", 
                                   sheet = "Lista de especies",
                                   skip = 6) %>%
@@ -76,7 +75,6 @@ ruta_san_gerardo <- readxl::read_xlsx(path = "data/compiling/2025/CRCA/San_Gerar
   filter(nombre_en_ingles != "NA") 
 
 # Sensoria ----
-
 ruta_sensoria <- readxl::read_xlsx(path = "data/compiling/2025/CRCA/Sensoria/CRCA_2025_Sensoria_trip_report_export_edited.xlsx",
                                     sheet = "Sheet1") %>%
   clean_names() %>% 
@@ -89,7 +87,6 @@ ruta_sensoria <- readxl::read_xlsx(path = "data/compiling/2025/CRCA/Sensoria/CRC
   select(nombre_en_ingles, total, comentarios, ruta)
 
                            
-
 # combine routes ----
 crca_compiled_long <- bind_rows(ruta_cacao, 
                                 ruta_leiva, 
@@ -102,7 +99,14 @@ crca_compiled_long <- bind_rows(ruta_cacao,
                                 ruta_sensoria) %>% 
   #only need this if there are accidentally duplicated rows...
   #distinct() %>% 
-    filter(total >= 1)
+    filter(total >= 1) %>% 
+  mutate(nombre_en_ingles = case_when(
+    nombre_en_ingles == "House Wren" ~ "Southern House Wren",
+    nombre_en_ingles == "Rufous-capped Warbler" ~ "Chestnut-capped Warbler",
+    nombre_en_ingles == "Squirrel Cuckoo" ~ "Common Squirrel-Cuckoo",
+    nombre_en_ingles == "Red-lored Parrot" ~ "Red-lored Amazon",
+    .default = nombre_en_ingles
+  ))
 
 #then check for duplicate rows
 crca_compiled_long %>%
@@ -115,10 +119,13 @@ crca_compiled_long %>%
 
 #good, no duplicates
 
-
 #pivot wide
-crca_compiled_wide <- crca_compiled_long %>% 
+crca_2025_compiled_wide <- crca_compiled_long %>% 
   pivot_wider(id_cols = nombre_en_ingles, names_from = ruta, values_from = total, values_fill = 0) %>% 
   group_by(nombre_en_ingles) %>% 
-  mutate(total = sum(across(cacao:san_gerardo), na.rm = TRUE)) %>% 
+  mutate(total = sum(across(cacao:sensoria), na.rm = TRUE)) %>% 
   ungroup()
+
+
+crca_2025_for_entry <- crca_2025_compiled_wide %>% 
+  select(nombre_en_ingles, total)
